@@ -8,7 +8,6 @@ package gui.scatterplot;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 import javax.swing.*;
 
 public class ScatterArea extends DrawArea implements MouseListener, MouseMotionListener{
@@ -17,11 +16,13 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	protected double minX,maxX,minY,maxY;
 	protected int[] margins;
 	protected Color pointColor;
-	protected Vector allObjects;
 	protected int rubStartX,rubStartY,rubLastX,rubLastY;
 	protected static double mx,bx,my,by;
 	protected boolean mesh, box, tooltips;
 	protected boolean rubInit, rubEnd, objectsEnclosed;
+	protected boolean hasValues;
+	protected int[][] objects;
+	protected int objW, objH;
 	//protected ScatterTooltip stt;
 
 	public final static Color DEFAULT_POINT_COLOR = new Color(50,50,200);
@@ -39,8 +40,8 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	
 	public ScatterArea (int width, int height, boolean m, boolean b, boolean t){
 		super(width,height);
-			initialize();
-	    mesh = m;
+		initialize();
+		mesh = m;
 		box = b;
 		tooltips = t;
 	    margins = new int[4];
@@ -48,25 +49,35 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	    margins[1] = 56;
 	    margins[2] = 20;
 	    margins[3] = 30;
-	    rubInit = false;
+	    
+	    objW = width-(margins[1]+margins[3]);
+		objH = height-(margins[0]+margins[2]);
+	    objects = new int[width][height];
+	    
+	    // Evtl. lässt sich das noch optimieren (mit Vektoren)
+	    for (int i=0; i<width; i++){
+	    	for (int k=0; k<height; k++){
+	    		objects[i][k] = 0;
+	    	}
+	    }
+	    hasValues = false;
+	    
+	    System.out.println("Breite: " + objW + " / Höhe: " + objH);
+	    
+		rubInit = false;
 	    objectsEnclosed = false;
+	    
 	    super.setBackground(Color.black);
 	    pointColor = DEFAULT_POINT_COLOR;
 	    pointSize = DEFAULT_POINT_SIZE;
-	    //stt = new ScatterTooltip();
 	    
-	    allObjects = new Vector();
+	    //allObjects = new Vector();
 	    
 	    addMouseListener(this);
 	    addMouseMotionListener(this);
 	    ToolTipManager.sharedInstance().registerComponent(this);
 	}
 	
-	/**
-	 * This method initializes this
-	 * 
-	 * @return void
-	 */
 	private void initialize() {
         this.addComponentListener(new java.awt.event.ComponentAdapter() { 
         	public void componentResized(java.awt.event.ComponentEvent e) {    
@@ -75,6 +86,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
         });
 			
 	}
+	
 	public void paint(Graphics g) {
 		
 	    g.setColor(Color.black);
@@ -219,51 +231,68 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	}
 	
 	public void drawObjects(Graphics g){
-		for(int i = 0; i < allObjects.size(); i++) {
-		    DualObject obj = (DualObject) allObjects.elementAt(i);
-		    obj.draw(g);
+		int maxValue = 1;
+		
+		for (int i = 0; i < width; i++) {
+			for (int k = 0; k < height; k++){
+				maxValue = Math.max(maxValue,objects[i][k]);
+			}
 		}
+		
+		for (int i = 0; i < width; i++) {
+			for (int k = 0; k < height; k++){
+				//System.out.println();
+				//System.out.println(i);
+				//System.out.println();
+				//System.out.println(k);
+				if(objects[i][k]!=0){
+					//System.out.println("Point (" + i + "/" + k + "), Value: " + objects[i][k]);
+					drawO(objects[i][k], i, k, maxValue, g);
+				}
+			}
+		}
+		//System.out.println("fertig");
+	}
+	
+	public void drawO(int value, int x, int y, int maxV, Graphics g){
+		//System.out.println("Object drawn: (" + x + "/" + y + ") with value " + value);
+		setCol(value, maxV, g);
+		g.drawOval(x,y,1,1);
+		//g.setColor(Color.WHITE);
+	}
+	
+	public void setCol(int val, int maxVal, Graphics g){
+		Color c = new Color(255,255,255);	
+		if (val < 0) c = Color.cyan.darker();
+		else if (val > 0){
+			for(int i=val; i>0; i--){
+				c = redder(c, maxVal);
+			}
+		}	
+		g.setColor(c);
+	}
+	
+	public Color redder (Color c, int maxV){
+		int step = Math.max(1, Math.round(255/maxV));
+		return new Color(255,Math.max(0,c.getGreen()-step),Math.max(c.getBlue()-step,0));
+	}
+	
+	public boolean setMinMax(int miX, int miY, int maX, int maY){
+		minX = miX;
+		minY = miY;
+		maxX = maX;
+		maxY = maY;
+		return true;
 	}
 	
 	public void newData(String id, double x, double y){
 		boolean newVal = false;
-		int size = allObjects.size();
 		
-		if (size != 0) {
-			
-			if (minX > x) { minX = x; minX -= (maxX-minX)/10; } // TODO: um Faktor verkleinern
-			if (maxX < x) { maxX = x; maxX += (maxX-minX)/10; } // TODO: um Faktor vergrößern
-			if (minY > y) { minY = y; minY -= (maxY-minY)/10; } // TODO: um Faktor verkleinern
-			if (maxY < y) { maxY = y; maxY += (maxY-minY)/10; } // TODO: um Faktor vergrößern
-			
-			calculateParameters();
-			
-			boolean isDiff = true;
-		/*	DualPoint obj;
-			for(int i = 0; i < size; i++) {
-				obj = (DualPoint) allObjects.elementAt(i);			
-				if (convertX(obj.x) == convertX(x) && convertY(obj.y) == convertY(y)) {
-					// In this case they are both going to be plottet on the same point
-					isDiff = false;
-					obj.anzGleich++; // Dont plot new point but increment anzGleich
-					break;
-				}
-			}
-		*/			
-			if (isDiff){
-				DualPoint dp = new DualPoint(id,x,y,this);
-				allObjects.add(dp);				
-			}
-		}
-		else {
-			DualPoint dp = new DualPoint(id,x,y,this);
-			allObjects.add(dp);
-			minX = x-Math.abs(x)/10;
-			maxX = x+Math.abs(x)/10;
-			minY = y-Math.abs(y)/10;
-			maxY = y+Math.abs(y)/10;
-		}		
-	//	repaint(); TODO:Harald
+		calculateParameters();
+		//System.out.println(convertX(x) + "/" + convertY(y));
+		objects[convertX(x)][convertY(y)]++;
+		
+		repaint();
 	}
 	
 	public static double[] getParameters() {
@@ -280,12 +309,29 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		return (int)(y*p[2]+p[3]);
 	}
 	
+	public static int convRevX(double x){
+		double[] p = getParameters();
+		return (int)(x/p[0]-p[1]/p[0]);
+	}
+	
+	public static int convRevY(double y){
+		double[] p = getParameters();
+		return (int)(y/p[2]-p[3]/p[2]);
+	}
+	
 	public void mousePressed(MouseEvent evt) {
 		int x        = evt.getX();
 		int y        = evt.getY();
 		int modifier = evt.getModifiers();
 		
-		// System.out.println(x+"/"+y + " with modifier: " + modifier);
+		// Reset Objects:
+		for (int i=0; i<width; i++){
+			for (int k=0; k<height; k++){
+				if (objects[i][k] < 0) objects[i][k]*=(-1);
+			}
+		}
+		
+		//System.out.println(x+"/"+y + " with modifier: " + modifier);
 		
 		rubEnd = false;
 		objectsEnclosed = false;
@@ -355,19 +401,34 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	}
 	
 	public void checkEnclosedPoints(){
-		for(int i = 0; i < allObjects.size(); i++) {
-		    DualPoint obj = (DualPoint) allObjects.elementAt(i);
-		    obj.setState(DualObject.NORMAL);
-		    double[] p = getParameters();
-		    
-		    if (Math.min(rubStartX,rubLastX) <= convertX(obj.x) &&
-		    	convertX(obj.x) <= Math.max(rubStartX,rubLastX) &&
-		    	Math.min(rubStartY,rubLastY) <= convertY(obj.y) &&
-		    	convertY(obj.y) <= Math.max(rubStartY,rubLastY)){
-		    		obj.setState(DualObject.SELECTED);
-		    		//System.out.println("Object enclosed: " + obj.id);
-		    		objectsEnclosed = true;
-		    }
+		System.out.println("Rectangle: minX: " + convRevX(Math.min(rubStartX,rubLastX)) + 
+									", maxX: " + convRevX(Math.max(rubStartX,rubLastX)) + 
+									", minY: " + convRevY(Math.max(rubStartY,rubLastY)) + 
+									", maxY: " + convRevY(Math.min(rubStartY,rubLastY)));
+		
+		
+		// UNNÖTIGES (?!?) hin und her konvertieren ==> bei vielen Daten sehr langsam!
+		
+		
+		int tempMinX = convRevX(Math.min(rubStartX,rubLastX));
+		int tempMaxX = convRevX(Math.max(rubStartX,rubLastX));
+		int tempMinY = convRevY(Math.max(rubStartY,rubLastY));
+		int tempMaxY = convRevY(Math.min(rubStartY,rubLastY));
+		
+		for (int i=tempMinX; i<tempMaxX; i++){
+			for (int k=tempMinY; k<tempMaxY; k++){
+				
+				int arrayX = Math.max(0,convertX(i));
+				arrayX = Math.min(width-1,convertX(i));
+				
+				int arrayY = Math.max(0,convertY(k));
+				arrayY = Math.min(height-1,convertY(k));
+				
+				if (objects[arrayX][arrayY] > 0){
+					objects[arrayX][arrayY]=(-1)*objects[arrayX][arrayY];
+					objectsEnclosed = true;
+				}
+			}
 		}
 		repaint();
 	}
@@ -376,17 +437,14 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		int[] numb = new int[2];
 		numb[0]=0;
 		numb[1]=0;
-		for(int i = 0; i < allObjects.size(); i++) {
-		    DualPoint obj = (DualPoint) allObjects.elementAt(i);
-		    double[] p = getParameters();
-		    
-		    if (Math.min(rubStartX,rubLastX) <= convertX(obj.x) &&
-		    	convertX(obj.x) <= Math.max(rubStartX,rubLastX) &&
-		    	Math.min(rubStartY,rubLastY) <= convertY(obj.y) &&
-		    	convertY(obj.y) <= Math.max(rubStartY,rubLastY)){
-		    		numb[0] += obj.anzGleich;
-		    		numb[1] += 1;
-		    }
+		
+		for (int i = 0; i < width; i++) {
+			for (int k = 0; k < height; k++){
+				if (objects[i][k] < 0) {
+					numb[0] += ((-1)*objects[i][k]);
+					numb[1]++ ;
+				}
+			}
 		}
 		return numb;
 	}
@@ -407,7 +465,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 
 	public void mouseMoved(MouseEvent evt) {
 		
-		if (rubInit && rubEnd && tooltips && objectsEnclosed){
+		/*if (rubInit && rubEnd && tooltips && objectsEnclosed){
 			
 			int x = evt.getX();
 			int y = evt.getY();
@@ -423,10 +481,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 					//stt.show(true);
 			}
 			//else stt.show(false);
-		}
+		}*/
 	}
 	
-	public void resetAllObjects(){
-	    allObjects.clear();
-	}
 }

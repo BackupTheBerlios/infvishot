@@ -1,1 +1,2 @@
 Sample: SQL SHOW COLUMNS FROM table
+https://developer.berlios.de/project/admin/?group_id=3392

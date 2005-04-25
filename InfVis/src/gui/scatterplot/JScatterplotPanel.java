@@ -60,7 +60,7 @@ public class JScatterplotPanel extends JPanel implements ActionListener, MouseLi
 	    scap.setPreferredSize(this.getSize());
 	    scap.setSize(this.getSize());
 	    scap.setPrefSize(this.getSize());
-	    scap.resetAllObjects();
+	//    scap.resetAllObjects();
 	    fillWithData();
 	    //scap.resetGr();
 	    //scap.paint(scap.gr);
@@ -118,18 +118,21 @@ public class JScatterplotPanel extends JPanel implements ActionListener, MouseLi
 	}
 	
 	public void fillWithData(){
-	    scap.resetAllObjects();
+	    //scap.resetAllObjects();
 	    if (sysCore.isDebug())
 	        System.out.println("Start fillWithData()...");
 	    
 	    if (dispData == null) {
+	    	
+	    	scap.setMinMax(0,0,10000,10000);
+	    	
 	        scap.newData("id1",50.333,10);
 	        scap.newData("id2",20.455,0.445);
 	        scap.newData("id3",30,30);
 	        scap.newData("id4",40,138);
 	    
-	        for (int i=5; i<300; i++){
-	            scap.newData("id"+i,/*Math.cos(i)*/100,100);
+	        for (int i=5; i<8000; i++){
+	            scap.newData("id"+i,/*Math.cos(i)*/i,i);
 	            //System.out.println("processing point: id" + i);
 	        }
 	    }
