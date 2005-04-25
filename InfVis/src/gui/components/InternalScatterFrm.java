@@ -74,7 +74,9 @@ public class InternalScatterFrm extends JInternalFrame {
 	    if (sysCore.isDebug())
 	        System.out.println("End fetching data...");
 	    
-	    jScatterplotPanel.dispData = sscdlm.getDataVector();
+	    jScatterplotPanel.setSQLSPManager(sscdlm);
+	    
+	    //jScatterplotPanel.dispData = sscdlm.getDataVector();
 	    	    
 	    jScatterplotPanel.fillWithData();
 	    jScatterplotPanel.updateUI();
@@ -114,7 +116,7 @@ public class InternalScatterFrm extends JInternalFrame {
 	 */    
 	private JScatterplotPanel getJScatterplotPanel() {
 		if (jScatterplotPanel == null) {
-			jScatterplotPanel = new JScatterplotPanel(this.getSize(),sysCore);
+			jScatterplotPanel = new JScatterplotPanel(this.getSize(),sysCore,null);
 		}
 		return jScatterplotPanel;
 	}

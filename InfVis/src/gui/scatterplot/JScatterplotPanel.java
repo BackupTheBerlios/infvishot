@@ -20,6 +20,7 @@ import java.util.*;
 import javax.swing.*;
 
 import sys.main.*;
+import sys.sql.managers.SQLScatterDataListManager;
 
 import sys.helpers.SimpleDataObject;
 
@@ -30,9 +31,11 @@ public class JScatterplotPanel extends JPanel implements ActionListener, MouseLi
 	private JPanel scatterGrPane = null;
 	private ScatterArea scap;
 	private ScatterContext scat;
+	private SQLScatterDataListManager sqlspmanager = null;
 	
-	public JScatterplotPanel(Dimension _d,SysCore _sysCore) {
+	public JScatterplotPanel(Dimension _d,SysCore _sysCore,SQLScatterDataListManager _scp) {
 		super();
+		sqlspmanager = _scp;
 		sysCore = _sysCore;
 		initialize(_d);		
 	}
@@ -61,6 +64,7 @@ public class JScatterplotPanel extends JPanel implements ActionListener, MouseLi
 	    scap.setSize(this.getSize());
 	    scap.setPrefSize(this.getSize());
 	//    scap.resetAllObjects();
+	    scap.setMinMax();
 	    fillWithData();
 	    //scap.resetGr();
 	    //scap.paint(scap.gr);
@@ -96,7 +100,7 @@ public class JScatterplotPanel extends JPanel implements ActionListener, MouseLi
 			
 			
 			// Create new Scatterplot, set Box & Mesh & Tooltips visible
-			scap = new ScatterArea(this.getWidth(),this.getHeight(),true,true,true){
+			scap = new ScatterArea(this.getWidth(),this.getHeight(),true,true,true,sqlspmanager){
 				public JToolTip createToolTip()
 				{
 					return new JMultiLineTooltip();
@@ -122,7 +126,7 @@ public class JScatterplotPanel extends JPanel implements ActionListener, MouseLi
 	    if (sysCore.isDebug())
 	        System.out.println("Start fillWithData()...");
 	    
-	    if (dispData == null) {
+	    if (sqlspmanager == null) {
 	    	
 	    	scap.setMinMax(0,0,10000,10000);
 	    	
@@ -144,10 +148,21 @@ public class JScatterplotPanel extends JPanel implements ActionListener, MouseLi
 	    Thread tr = new Thread(xx);
         tr.start();
 	         */
+	        /*
 	        for (int i=0; i<dispData.size(); i++){
 	            SimpleDataObject sdo = (SimpleDataObject)dispData.elementAt(i);
 	            scap.newData(sdo.getID(),sdo.getX(),sdo.getY());
 	        }
+	        */
+	        
+	        double[] tmp_bounds = sqlspmanager.getBounds();
+		 
+	        scap.setMinMax(tmp_bounds[0],tmp_bounds[1],tmp_bounds[2],tmp_bounds[3]);
+	        
+	        for (int i=0; i<sqlspmanager.getDataArray().length; i++){
+	            scap.newData("id" + i, sqlspmanager.getDataArray()[i][0], sqlspmanager.getDataArray()[i][1]);
+	        }
+	        
 	    }
 	    
 	    if (sysCore.isDebug())
@@ -156,6 +171,11 @@ public class JScatterplotPanel extends JPanel implements ActionListener, MouseLi
 		// TODO: Bei Größenänderung Daten neu schicken !!!
 	}
 		
+	public void setSQLSPManager(SQLScatterDataListManager _sqlspmanager){
+	    sqlspmanager = _sqlspmanager;
+	    scap.setSQLSPManager(sqlspmanager);
+	}
+	
 	public void mouseClicked(MouseEvent evt) {
 		int x = evt.getX();
 		int y = evt.getY();

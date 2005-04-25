@@ -9,6 +9,7 @@ package gui.scatterplot;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import sys.sql.managers.SQLScatterDataListManager;
 
 public class ScatterArea extends DrawArea implements MouseListener, MouseMotionListener{
 
@@ -24,6 +25,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	protected int[][] objects;
 	protected int objW, objH;
 	//protected ScatterTooltip stt;
+	private SQLScatterDataListManager sqlspmanager = null;
 
 	public final static Color DEFAULT_POINT_COLOR = new Color(50,50,200);
 	public final static int DEFAULT_POINT_SIZE = 2; // should be even!
@@ -38,8 +40,10 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	protected final static String MESH_TRUE = "mesht";
 	protected final static String MESH_FALSE = "meshf";
 	
-	public ScatterArea (int width, int height, boolean m, boolean b, boolean t){
+	public ScatterArea (int width, int height, boolean m, boolean b, boolean t,SQLScatterDataListManager _scp){
 		super(width,height);
+		sqlspmanager = _scp;
+		
 		initialize();
 		mesh = m;
 		box = b;
@@ -50,16 +54,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	    margins[2] = 20;
 	    margins[3] = 30;
 	    
-	    objW = width-(margins[1]+margins[3]);
-		objH = height-(margins[0]+margins[2]);
-	    objects = new int[width][height];
 	    
-	    // Evtl. lässt sich das noch optimieren (mit Vektoren)
-	    for (int i=0; i<width; i++){
-	    	for (int k=0; k<height; k++){
-	    		objects[i][k] = 0;
-	    	}
-	    }
 	    hasValues = false;
 	    
 	    System.out.println("Breite: " + objW + " / Höhe: " + objH);
@@ -85,6 +80,10 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
         	}
         });
 			
+	}
+	
+	public void setSQLSPManager(SQLScatterDataListManager _sqlspmanager){
+	    sqlspmanager = _sqlspmanager;
 	}
 	
 	public void paint(Graphics g) {
@@ -277,11 +276,30 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		return new Color(255,Math.max(0,c.getGreen()-step),Math.max(c.getBlue()-step,0));
 	}
 	
-	public boolean setMinMax(int miX, int miY, int maX, int maY){
+	//Harald
+	public boolean setMinMax(){
+	    this.setMinMax(minX,minY,maxX,maxY);
+	    
+	    return true;
+	}
+	
+	public boolean setMinMax(double miX, double miY, double maX, double maY){
 		minX = miX;
 		minY = miY;
 		maxX = maX;
 		maxY = maY;
+		
+		objW = width-(margins[1]+margins[3]);
+		objH = height-(margins[0]+margins[2]);
+	    objects = new int[width][height];
+	    
+	    // Evtl. lässt sich das noch optimieren (mit Vektoren)
+	    for (int i=0; i<width; i++){
+	    	for (int k=0; k<height; k++){
+	    		objects[i][k] = 0;
+	    	}
+	    }
+	    
 		return true;
 	}
 	
@@ -409,26 +427,39 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		
 		// UNNÖTIGES (?!?) hin und her konvertieren ==> bei vielen Daten sehr langsam!
 		
-		
-		int tempMinX = convRevX(Math.min(rubStartX,rubLastX));
-		int tempMaxX = convRevX(Math.max(rubStartX,rubLastX));
-		int tempMinY = convRevY(Math.max(rubStartY,rubLastY));
-		int tempMaxY = convRevY(Math.min(rubStartY,rubLastY));
-		
-		for (int i=tempMinX; i<tempMaxX; i++){
-			for (int k=tempMinY; k<tempMaxY; k++){
-				
-				int arrayX = Math.max(0,convertX(i));
-				arrayX = Math.min(width-1,convertX(i));
-				
-				int arrayY = Math.max(0,convertY(k));
-				arrayY = Math.min(height-1,convertY(k));
-				
-				if (objects[arrayX][arrayY] > 0){
-					objects[arrayX][arrayY]=(-1)*objects[arrayX][arrayY];
-					objectsEnclosed = true;
-				}
-			}
+		if (sqlspmanager != sqlspmanager) {
+		    double[] tmp_bounds = sqlspmanager.getBounds();
+		    
+		    int tempMinX = (int)tmp_bounds[0];
+		    int tempMaxX = (int)tmp_bounds[2];
+		    int tempMinY = (int)tmp_bounds[1];
+		    int tempMaxY = (int)tmp_bounds[3];
+		    
+		    
+		}
+		else {
+		    int tempMinX = convRevX(Math.min(rubStartX,rubLastX));
+		    int tempMaxX = convRevX(Math.max(rubStartX,rubLastX));
+		    int tempMinY = convRevY(Math.max(rubStartY,rubLastY));
+		    int tempMaxY = convRevY(Math.min(rubStartY,rubLastY));
+		    
+		    
+		    
+		    for (int i=tempMinX; i<tempMaxX; i++){
+		        for (int k=tempMinY; k<tempMaxY; k++){
+		            
+		            int arrayX = Math.max(0,convertX(i));
+		            arrayX = Math.min(width-1,convertX(i));
+		            
+		            int arrayY = Math.max(0,convertY(k));
+		            arrayY = Math.min(height-1,convertY(k));
+		            
+		            if (objects[arrayX][arrayY] > 0){
+		                objects[arrayX][arrayY]=(-1)*objects[arrayX][arrayY];
+		                objectsEnclosed = true;
+		            }
+		        }
+		    }
 		}
 		repaint();
 	}
