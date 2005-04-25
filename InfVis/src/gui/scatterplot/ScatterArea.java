@@ -428,6 +428,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		// UNNÖTIGES (?!?) hin und her konvertieren ==> bei vielen Daten sehr langsam!
 		
 		if (sqlspmanager != sqlspmanager) {
+		    //HARALD: wahrscheinlich wieder entfernen
 		    double[] tmp_bounds = sqlspmanager.getBounds();
 		    
 		    int tempMinX = (int)tmp_bounds[0];
