@@ -438,6 +438,19 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		    sqlspmanager.setBounds(tempMinX,tempMinY,tempMaxX,tempMaxY);
 		    sqlspmanager.loadData();
 		    
+		    for (int i=0; i<sqlspmanager.getDataArray().length; i++){
+		        int arrayX = Math.max(0,convertX(sqlspmanager.getDataArray()[i][0]));
+	            arrayX = Math.min(width-1,convertX(sqlspmanager.getDataArray()[i][0]));
+	            
+	            int arrayY = Math.max(0,convertY(sqlspmanager.getDataArray()[i][1]));
+	            arrayY = Math.min(height-1,convertY(sqlspmanager.getDataArray()[i][1]));
+	            
+	            if (objects[arrayX][arrayY] > 0){
+	                objects[arrayX][arrayY]=(-1)*objects[arrayX][arrayY];
+	                objectsEnclosed = true;
+	            }
+		    }
+		    
 		}
 		else {
 		    	    
