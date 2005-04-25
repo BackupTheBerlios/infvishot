@@ -427,24 +427,20 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		
 		// UNNÖTIGES (?!?) hin und her konvertieren ==> bei vielen Daten sehr langsam!
 		
-		if (sqlspmanager != sqlspmanager) {
+		int tempMinX = convRevX(Math.min(rubStartX,rubLastX));
+	    int tempMaxX = convRevX(Math.max(rubStartX,rubLastX));
+	    int tempMinY = convRevY(Math.max(rubStartY,rubLastY));
+	    int tempMaxY = convRevY(Math.min(rubStartY,rubLastY));
+	    
+	    
+		if (sqlspmanager != null) {
 		    //HARALD: wahrscheinlich wieder entfernen
-		    double[] tmp_bounds = sqlspmanager.getBounds();
-		    
-		    int tempMinX = (int)tmp_bounds[0];
-		    int tempMaxX = (int)tmp_bounds[2];
-		    int tempMinY = (int)tmp_bounds[1];
-		    int tempMaxY = (int)tmp_bounds[3];
-		    
+		    sqlspmanager.setBounds(tempMinX,tempMinY,tempMaxX,tempMaxY);
+		    sqlspmanager.loadData();
 		    
 		}
 		else {
-		    int tempMinX = convRevX(Math.min(rubStartX,rubLastX));
-		    int tempMaxX = convRevX(Math.max(rubStartX,rubLastX));
-		    int tempMinY = convRevY(Math.max(rubStartY,rubLastY));
-		    int tempMaxY = convRevY(Math.min(rubStartY,rubLastY));
-		    
-		    
+		    	    
 		    
 		    for (int i=tempMinX; i<tempMaxX; i++){
 		        for (int k=tempMinY; k<tempMaxY; k++){
