@@ -8,6 +8,8 @@ package gui.components;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
+
+import sys.helpers.SimpleStringValue;
 import sys.main.SysCore;
 import sys.sql.managers.*;
 
@@ -116,8 +118,11 @@ public class InternalSettingsFrm extends JInternalFrame {
 					SQLColumnManager cdata = new SQLColumnManager(sysCore,jComboBox.getSelectedItem().toString(),true);
 					
 					for (int i=0; i<cdata.count(); i++){
-					    sysCore.getMainFrm().iscatterfrm.jComboBoxXAxis.addItem(cdata.elementAt(i));
-					    sysCore.getMainFrm().iscatterfrm.jComboBoxYAxis.addItem(cdata.elementAt(i));
+					    SimpleStringValue ss = (SimpleStringValue)cdata.elementAt(i);
+					    if (ss.isS2Numeric()){
+					        sysCore.getMainFrm().iscatterfrm.jComboBoxXAxis.addItem(cdata.elementAt(i));
+					        sysCore.getMainFrm().iscatterfrm.jComboBoxYAxis.addItem(cdata.elementAt(i));
+					    }
 					}
 				}
 			});

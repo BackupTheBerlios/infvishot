@@ -7,6 +7,7 @@
 
 package sys.sql.managers;
 
+import sys.helpers.SimpleStringValue;
 import sys.main.InfVisException;
 import sys.main.SysCore;
 import sys.sql.queries.*;
@@ -40,7 +41,8 @@ public class SQLColumnManager implements java.io.Serializable {
 		try {
 		    ResultSet rSet = sysCore.getDB().sendQuery(new SQLColumnList(sysCore.getDBProps().getDBType()).getList(table));
 			while(rSet.next()) {
-			   addElement(rSet.getString(1));
+			   SimpleStringValue ss = new SimpleStringValue(rSet.getString(1),rSet.getString(2));
+			   addElement(ss);
 			}
 		}
 		catch (Exception e) {
@@ -49,7 +51,7 @@ public class SQLColumnManager implements java.io.Serializable {
 	}
 	
 	
-	public void addElement(String _data){
+	public void addElement(SimpleStringValue _data){
 	    entries.add(_data);
 	}
 	
@@ -57,8 +59,8 @@ public class SQLColumnManager implements java.io.Serializable {
 	    return entries.size();
 	}
 	
-	public String elementAt(int _pos){
-	    return (String) entries.elementAt(_pos);
+	public SimpleStringValue elementAt(int _pos){
+	    return (SimpleStringValue) entries.elementAt(_pos);
 	}
 	
 }
