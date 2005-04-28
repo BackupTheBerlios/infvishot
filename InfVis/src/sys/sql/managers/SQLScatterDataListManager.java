@@ -71,6 +71,9 @@ public class SQLScatterDataListManager implements java.io.Serializable {
 		    if (rSet.getRow() > 0){
 		        dData = new double[rSet.getRow()][2];
 		    }
+		    else {
+		        dData = new double[0][0];
+		    }
 		    
 		    rSet.beforeFirst();
 		    

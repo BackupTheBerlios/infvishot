@@ -457,7 +457,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		    }
 		    
 		    tmo.stop();
-		    sqlspmanager.getSysCore().getMainFrm().iperformancefrm.addTimeRow(sqlspmanager.getTime().getTimeDiff(),tmo.getTimeDiff(),"Select Scatterplot");
+		    sqlspmanager.getSysCore().getMainFrm().iperformancefrm.addTimeRow(2,sqlspmanager.getTime().getTimeDiff(),tmo.getTimeDiff(),"Select Scatterplot",sqlspmanager.getDataArray().length);
 		    
 		}
 		else {
