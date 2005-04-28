@@ -115,6 +115,8 @@ public class InternalSettingsFrm extends JInternalFrame {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {    
 					sysCore.getMainFrm().iscatterfrm.jComboBoxXAxis.removeAllItems();
 					sysCore.getMainFrm().iscatterfrm.jComboBoxYAxis.removeAllItems();
+					sysCore.getMainFrm().imosaicfrm.jComboBox.removeAllItems();
+					sysCore.getMainFrm().imosaicfrm.jComboBox1.removeAllItems();
 					SQLColumnManager cdata = new SQLColumnManager(sysCore,jComboBox.getSelectedItem().toString(),true);
 					
 					for (int i=0; i<cdata.count(); i++){
@@ -123,6 +125,8 @@ public class InternalSettingsFrm extends JInternalFrame {
 					        sysCore.getMainFrm().iscatterfrm.jComboBoxXAxis.addItem(cdata.elementAt(i));
 					        sysCore.getMainFrm().iscatterfrm.jComboBoxYAxis.addItem(cdata.elementAt(i));
 					    }
+					    sysCore.getMainFrm().imosaicfrm.jComboBox.addItem(cdata.elementAt(i));
+					    sysCore.getMainFrm().imosaicfrm.jComboBox1.addItem(cdata.elementAt(i));
 					}
 				}
 			});

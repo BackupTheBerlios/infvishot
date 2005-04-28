@@ -85,7 +85,7 @@ public class InternalScatterFrm extends JInternalFrame {
 	    jScatterplotPanel.fillWithData();
 	    jScatterplotPanel.updateUI();
 	    tmo.stop();
-	    sysCore.getMainFrm().iperformancefrm.addTimeRow(1,sscdlm.getTime().getTimeDiff(),tmo.getTimeDiff(),"Paint",sscdlm.getDataArray().length);
+	    sysCore.getMainFrm().iperformancefrm.addTimeRow(1,sscdlm.getTime().getTimeDiff(),tmo.getTimeDiff(),"PaintScatter",sscdlm.getDataArray().length);
 	}
 	
 	/**
