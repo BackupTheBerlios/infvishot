@@ -3,5 +3,12 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="src/lib/mysql-connector-java-3.0.11-stable-bin.jar"/>
+	<classpathentry kind="lib" path="src/lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="src/lib/gnujaxp.jar"/>
+	<classpathentry kind="lib" path="src/lib/jcommon-0.9.6.jar"/>
+	<classpathentry kind="lib" path="src/lib/jfreechart-0.9.18.jar"/>
+	<classpathentry kind="lib" path="src/lib/junit.jar"/>
+	<classpathentry kind="lib" path="src/lib/log4j-1.2.8.jar"/>
+	<classpathentry kind="lib" path="src/lib/xalan.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
