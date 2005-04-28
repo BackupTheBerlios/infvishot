@@ -9,6 +9,8 @@ package gui.scatterplot;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import sys.helpers.TimeMeasureObject;
 import sys.sql.managers.SQLScatterDataListManager;
 
 public class ScatterArea extends DrawArea implements MouseListener, MouseMotionListener{
@@ -438,6 +440,9 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		    sqlspmanager.setBounds(tempMinX,tempMinY,tempMaxX,tempMaxY);
 		    sqlspmanager.loadData();
 		    
+		    TimeMeasureObject tmo = new TimeMeasureObject();
+		    tmo.start();
+		    
 		    for (int i=0; i<sqlspmanager.getDataArray().length; i++){
 		        int arrayX = Math.max(0,convertX(sqlspmanager.getDataArray()[i][0]));
 	            arrayX = Math.min(width-1,convertX(sqlspmanager.getDataArray()[i][0]));
@@ -450,6 +455,10 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	                objectsEnclosed = true;
 	            }
 		    }
+		    
+		    tmo.stop();
+		    sqlspmanager.getSysCore().getMainFrm().iperformancefrm.addTimeRow(sqlspmanager.getTime().getTimeDiff(),tmo.getTimeDiff(),"Select Scatterplot");
+		    
 		}
 		else {
 		    	    

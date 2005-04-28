@@ -23,14 +23,15 @@ public class InternalPerformanceFrm extends JInternalFrame {
     private static SysCore sysCore = null;
     private JMenuItem jMenuItem = null;    
 	private javax.swing.JPanel jContentPane = null;
-
+	private int curID = 0;
+	
 	private JPanel jPanel1 = null;
 	private JPanel jPanel = null;
 	private JTabbedPane jTabbedPane = null;
 	private JPanel jPanel2 = null;
 	private JPanel jPanel3 = null;
 	private JPanel jPanel4 = null;
-	private JTable jTable = null;
+	private PerformanceTable jTable = null;
 	private JScrollPane jScrollPane = null;
 	private JPanel jPanel5 = null;
 	private JButton jButton = null;
@@ -64,6 +65,20 @@ public class InternalPerformanceFrm extends JInternalFrame {
 			}
 		});
 		sysCore.getMainFrm().jMenu1.add(jMenuItem);
+	}
+	
+	public void addTimeRow(long _time1, long _time2, String _typ){
+	    Object[] ox = new Object[4];
+	    ox[0] = new Integer(curID);
+	    ox[1] = new Long(_time1);
+	    ox[2] = new Long(_time2);
+	    ox[3] = _typ;
+	    
+	    jTable.addRow(ox);
+	    
+	    //TODO: draw graph
+	    
+	    curID++;
 	}
 	
 	/**
@@ -173,9 +188,9 @@ public class InternalPerformanceFrm extends JInternalFrame {
 	 * 	
 	 * @return javax.swing.JTable	
 	 */    
-	private JTable getJTable() {
+	private PerformanceTable getJTable() {
 		if (jTable == null) {
-			jTable = new JTable();
+			jTable = new PerformanceTable();
 		}
 		return jTable;
 	}

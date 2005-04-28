@@ -9,6 +9,8 @@ package gui.components;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
+
+import sys.helpers.TimeMeasureObject;
 import sys.main.SysCore;
 import sys.sql.managers.SQLScatterDataListManager;
 
@@ -77,9 +79,13 @@ public class InternalScatterFrm extends JInternalFrame {
 	    jScatterplotPanel.setSQLSPManager(sscdlm);
 	    
 	    //jScatterplotPanel.dispData = sscdlm.getDataVector();
-	    	    
+	    
+	    TimeMeasureObject tmo = new TimeMeasureObject();
+	    tmo.start();
 	    jScatterplotPanel.fillWithData();
 	    jScatterplotPanel.updateUI();
+	    tmo.stop();
+	    sysCore.getMainFrm().iperformancefrm.addTimeRow(sscdlm.getTime().getTimeDiff(),tmo.getTimeDiff(),"Paint");
 	}
 	
 	/**

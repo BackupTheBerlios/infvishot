@@ -157,4 +157,7 @@ public class SQLScatterDataListManager implements java.io.Serializable {
 	    return dData;
 	}
 	
+	public SysCore getSysCore(){
+	    return sysCore;
+	}
 }
