@@ -6,8 +6,10 @@
 
 package gui.components;
 
-import javax.swing.JInternalFrame;
-import javax.swing.JMenuItem;
+import javax.swing.*;
+
+import sys.main.IOManager;
+import sys.main.InfVisException;
 import sys.main.SysCore;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
@@ -313,6 +315,38 @@ public class InternalPerformanceFrm extends JInternalFrame {
 		if (jButton == null) {
 			jButton = new JButton();
 			jButton.setText("Als CSV exportieren");
+			jButton.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+				    javax.swing.JFileChooser jFileChooser1 = new javax.swing.JFileChooser();
+					jFileChooser1.setDialogType(JFileChooser.SAVE_DIALOG);
+					jFileChooser1.setDialogTitle("Daten als CSV exportieren...");
+					jFileChooser1.setFileSelectionMode(JFileChooser.FILES_ONLY);
+					jFileChooser1.setMultiSelectionEnabled(false);
+					
+					if (jFileChooser1.showSaveDialog(null) != 1){
+						StringBuffer sb = new StringBuffer();
+						sb.append("ID;ZeitDB;ZeitGUI;Datasets;Typ\n");
+						
+						for (int i=0; i<jTable.getRowCount(); i++){
+							
+							sb.append(jTable.getValueAt(i,0).toString() + ";" +
+							          jTable.getValueAt(i,1).toString() + ";" +
+							          jTable.getValueAt(i,2).toString() + ";" +
+							          jTable.getValueAt(i,3).toString() + ";'" +
+							          jTable.getValueAt(i,4).toString() + "'\n");
+						}
+						
+						IOManager iom = new IOManager();
+						try {
+						    iom.writeTextfile(sb.toString().replace(".",","),jFileChooser1.getSelectedFile().getAbsolutePath());
+						}
+						catch (Exception exc){
+						    new InfVisException("Schreibfehler","Fehler beim Schreiben von: " + jFileChooser1.getSelectedFile().getAbsolutePath(),true);
+						}
+					}
+					
+				}
+			});
 		}
 		return jButton;
 	}
