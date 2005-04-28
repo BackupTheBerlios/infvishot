@@ -28,6 +28,7 @@ public class MainFrm extends JFrame {
     public InternalScatterFrm iscatterfrm = null;
     public InternalMosaicFrm imosaicfrm = null;
     public InternalSettingsFrm isettingsfrm = null;
+    public InternalPerformanceFrm iperformancefrm = null;
     
 	private javax.swing.JPanel jContentPane = null;
 
@@ -92,6 +93,11 @@ public class MainFrm extends JFrame {
         isettingsfrm = new InternalSettingsFrm(sysCore);
         jDesktopPane.add(isettingsfrm);
         isettingsfrm.setVisible(true);
+        
+        //Performance
+        iperformancefrm = new InternalPerformanceFrm(sysCore);
+        jDesktopPane.add(iperformancefrm);
+        iperformancefrm.setVisible(true);
 	}
 	
 	/**
