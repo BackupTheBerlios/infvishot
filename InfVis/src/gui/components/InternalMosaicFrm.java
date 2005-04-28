@@ -70,8 +70,12 @@ public class InternalMosaicFrm extends JInternalFrame {
 	    if (sysCore.isDebug())
 	        System.out.println("Start fetching data...");
 	    
-	    SQLMosaicDataListManager sscdlm = new SQLMosaicDataListManager(sysCore,sysCore.getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),jComboBox.getSelectedItem().toString(), jComboBox1.getSelectedItem().toString(),true);
 	    
+	    SQLMosaicDataListManager sscdlm = new SQLMosaicDataListManager(sysCore,sysCore.getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),jComboBox.getSelectedItem().toString(), jComboBox1.getSelectedItem().toString(),true);
+	    /*for (int i=0; i<sscdlm.getDataArray().length; i++)
+	        for (int j=0; j<sscdlm.getDataArray()[i].length; j++)
+	            System.out.println(sscdlm.getDataArray()[i][j]);
+	    */
 	    if (sysCore.isDebug())
 	        System.out.println("End fetching data...");
 	    
@@ -86,9 +90,13 @@ public class InternalMosaicFrm extends JInternalFrame {
 	    String[] names =  new String[2];
 	    names[0] = "Spalte1";
 		names[1] = "Spalte2";
+		
+		//jPanel1.removeAll(); //H
+		//jPanel1.add(new MainWindow(sscdlm.getDataArray(),names), java.awt.BorderLayout.CENTER); //H
+		
 	    //mainWindow.setData(sscdlm.getDataArray(),names);
 	    tmo.stop();
-	    sysCore.getMainFrm().iperformancefrm.addTimeRow(1,sscdlm.getTime().getTimeDiff(),tmo.getTimeDiff(),"PaintMosaic",sscdlm.getDataArray().length);
+	    sysCore.getMainFrm().iperformancefrm.addTimeRow(1,sscdlm.getTime().getTimeDiff(),tmo.getTimeDiff(),"PaintMosaic",sscdlm.getDataArray()[0].length);
 	}
 	
 	/**

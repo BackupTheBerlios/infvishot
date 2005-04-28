@@ -65,6 +65,7 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 		names = nam;
 		
 		initialize();
+		this.repaint();
 	}
 	
 	public void initialize(){
