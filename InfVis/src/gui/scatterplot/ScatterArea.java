@@ -310,7 +310,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		//System.out.println(convertX(x) + "/" + convertY(y));
 		objects[convertX(x)][convertY(y)]++;
 		
-		repaint();
+		//repaint();
 	}
 	
 	public static double[] getParameters() {
@@ -450,7 +450,6 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	                objectsEnclosed = true;
 	            }
 		    }
-		    
 		}
 		else {
 		    	    

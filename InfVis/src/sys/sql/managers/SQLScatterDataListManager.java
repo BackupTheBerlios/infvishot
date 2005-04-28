@@ -26,6 +26,7 @@ public class SQLScatterDataListManager implements java.io.Serializable {
 				   maxX = 0.0d, 
 				   maxY = 0.0d;
 	private boolean treshSet = false;
+	private TimeMeasureObject timemeasure = null;
 	
 	public SQLScatterDataListManager(SysCore _sysCore, String _table, String _x, String _y, boolean _load) {
 		sysCore = _sysCore;
@@ -33,6 +34,7 @@ public class SQLScatterDataListManager implements java.io.Serializable {
 		x = _x;
 		y = _y;
 		entries = new java.util.Vector();
+		timemeasure = new TimeMeasureObject();
 		
 		if (_load){
 		    loadData();
@@ -44,10 +46,15 @@ public class SQLScatterDataListManager implements java.io.Serializable {
 	    entries.clear();
 	}
 	
+	public TimeMeasureObject getTime(){
+	    return timemeasure;
+	}
+	
 	/** Load entry */
 	public void loadData(){
 		
 		try {
+		    timemeasure.start();
 		    ResultSet rSet = null;
 		    int cnt = 0;
 		    entries = new java.util.Vector();
@@ -71,10 +78,12 @@ public class SQLScatterDataListManager implements java.io.Serializable {
 			   dData[cnt][0] = rSet.getDouble(1);
 			   dData[cnt][1] = rSet.getDouble(2);
 			   
-			   SimpleDataObject sdo = new SimpleDataObject("id"+cnt, rSet.getDouble(1), rSet.getDouble(2));
-			   addElement(sdo);
+		//	   SimpleDataObject sdo = new SimpleDataObject("id"+cnt, rSet.getDouble(1), rSet.getDouble(2));
+		//	   addElement(sdo);
 			   cnt++;
 			}
+			timemeasure.stop();
+			System.out.println(timemeasure.getTimeDiff()); //TODO: delete
 		}
 		catch (Exception e) {
 			new InfVisException("Fehler","Fehler beim Laden!" + e.getMessage(),false).showDialogMessage();

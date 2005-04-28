@@ -23,7 +23,7 @@ public final class DBManager implements java.io.Serializable {
     private Statement stmt = null;
     private ResultSet rSet = null;
     private PreparedStatement prepStatement = null;
-        
+    
     /** Creates a new instance of DBManager */
     public DBManager(String inUsername, String inPasswd, String inUrl, String inDbName, int inType) {
         username = inUsername;
