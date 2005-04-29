@@ -64,8 +64,8 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 	    datas = data;
 		names = nam;
 		
+		this.removeAll();
 		initialize();
-		this.repaint();
 	}
 	
 	public void initialize(){
@@ -77,8 +77,8 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
         */
 		
         mos = new MosaicArea(550, 500, prozi.getVector(), prozi.dist);
-        this.add(mos);
-        
+        this.add(mos,java.awt.BorderLayout.CENTER);
+       
       /*  frame.getContentPane().setLayout(new BorderLayout()); 
         frame.getContentPane().add(this, BorderLayout.CENTER);
         
@@ -87,7 +87,7 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
         frame.setVisible(true);
         */
         this.addComponentListener(new java.awt.event.ComponentAdapter() { 
-			public void componentResized(java.awt.event.ComponentEvent e) {    
+			public void componentResized(java.awt.event.ComponentEvent e) {
 				resizeMos();
 			}
 		});

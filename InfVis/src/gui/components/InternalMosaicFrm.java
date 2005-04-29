@@ -28,7 +28,6 @@ public class InternalMosaicFrm extends JInternalFrame {
 
 	private JPanel jPanel = null;
 	private JButton jButton = null;
-	private JPanel jPanel1 = null;
 	private MainWindow mainWindow = null;
 	private JLabel jLabel = null;
 	private JLabel jLabel1 = null;
@@ -88,11 +87,12 @@ public class InternalMosaicFrm extends JInternalFrame {
 	    //jScatterplotPanel.fillWithData();
 	    //jScatterplotPanel.updateUI();
 	    String[] names =  new String[2];
-	    names[0] = "Spalte1";
-		names[1] = "Spalte2";
+	    names[0] = jComboBox.getSelectedItem().toString();
+		names[1] = jComboBox1.getSelectedItem().toString();
 		
 		//jPanel1.removeAll(); //H
 		//jPanel1.add(new MainWindow(sscdlm.getDataArray(),names), java.awt.BorderLayout.CENTER); //H
+		mainWindow.setData(sscdlm.getDataArray(),names);
 		
 	    //mainWindow.setData(sscdlm.getDataArray(),names);
 	    tmo.stop();
@@ -122,7 +122,7 @@ public class InternalMosaicFrm extends JInternalFrame {
 			jContentPane = new javax.swing.JPanel();
 			jContentPane.setLayout(new BorderLayout());
 			jContentPane.add(getJPanel(), java.awt.BorderLayout.SOUTH);
-			jContentPane.add(getJPanel1(), java.awt.BorderLayout.CENTER);
+			jContentPane.add(getMainWindow(), java.awt.BorderLayout.CENTER);
 		}
 		return jContentPane;
 	}
@@ -162,19 +162,6 @@ public class InternalMosaicFrm extends JInternalFrame {
 			});
 		}
 		return jButton;
-	}
-	/**
-	 * This method initializes jPanel1	
-	 * 	
-	 * @return javax.swing.JPanel	
-	 */    
-	private JPanel getJPanel1() {
-		if (jPanel1 == null) {
-			jPanel1 = new JPanel();
-			jPanel1.setLayout(new BorderLayout());
-			jPanel1.add(getMainWindow(), java.awt.BorderLayout.CENTER);
-		}
-		return jPanel1;
 	}
 	/**
 	 * This method initializes mainWindow	

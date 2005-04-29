@@ -242,7 +242,7 @@ public class MosaicArea extends DrawMosaic{
 		Rectangles.clear();
 		colNames.clear();
 		rowNames.clear();
-		fontPos.clear();
+		if (fontPos != null) fontPos.clear();
 		
 		sortRects();
 		
