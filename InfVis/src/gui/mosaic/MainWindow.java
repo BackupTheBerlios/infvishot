@@ -66,6 +66,8 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 		
 		this.removeAll();
 		initialize();
+		resizeMos();
+		this.updateUI();
 	}
 	
 	public void initialize(){
