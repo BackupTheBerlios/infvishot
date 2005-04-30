@@ -47,4 +47,20 @@ public class SQLScatterDataList extends SQLQuery implements Serializable {
 		
 		return outp;
 	}
+	
+	/** List of with min,max */
+	public String getList(String _table, String _x, String _y, double minX, double minY, double maxX, double maxY, String _spx, String _spy) {
+		String outp = "";
+		
+		switch (sqlType) {
+			case 1: //MySQL
+			case 2: //HSQL
+				outp = "SELECT " + _x + ", " + _y + " " +
+					   "FROM " + _table + " " +
+					   "WHERE " + _spx + ">=" + minX + " AND " + _spx + "<=" +  maxX + " AND " + _spy + ">=" + minY + " AND " + _spy + "<=" +  maxY + " "; 
+				break;
+		}
+		
+		return outp;
+	}
 }

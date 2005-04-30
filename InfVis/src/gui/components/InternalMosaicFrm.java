@@ -99,6 +99,22 @@ public class InternalMosaicFrm extends JInternalFrame {
 	    sysCore.getMainFrm().iperformancefrm.addTimeRow(1,sscdlm.getTime().getTimeDiff(),tmo.getTimeDiff(),"PaintMosaic",sscdlm.getDataArray()[0].length);
 	}
 	
+	public void fillMosaic(int _minX, int _minY, int _maxX, int _maxY){
+	    SQLMosaicDataListManager sqlspmanager = new SQLMosaicDataListManager(sysCore,sysCore.getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),jComboBox.getSelectedItem().toString(), jComboBox1.getSelectedItem().toString(),false);
+	    sqlspmanager.setBounds(_minX,_minY,_maxX,_maxY,sysCore.getMainFrm().iscatterfrm.jComboBoxXAxis.getSelectedItem().toString(),sysCore.getMainFrm().iscatterfrm.jComboBoxYAxis.getSelectedItem().toString());
+	    sqlspmanager.loadData();
+	    
+	    TimeMeasureObject tmo = new TimeMeasureObject();
+	    tmo.start();
+	    String[] names =  new String[2];
+	    names[0] = jComboBox.getSelectedItem().toString();
+		names[1] = jComboBox1.getSelectedItem().toString();
+	    mainWindow.fillRects(sqlspmanager.getDataArray(),names);
+	    tmo.stop();
+	    
+	    sysCore.getMainFrm().iperformancefrm.addTimeRow(1,sqlspmanager.getTime().getTimeDiff(),tmo.getTimeDiff(),"MosaicFill",sqlspmanager.getDataArray()[0].length);
+	}
+	
 	/**
 	 * This method initializes this
 	 * 

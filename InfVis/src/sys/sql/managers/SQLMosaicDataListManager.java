@@ -20,8 +20,13 @@ public class SQLMosaicDataListManager implements java.io.Serializable {
 	private String table = "";
 	private String x = "";
 	private String y = "";
+	private String sy = "";
+	private String sx = "";
 	private String[][] dData = null;
-
+	private double minX = 0.0d, 
+				   minY = 0.0d, 
+				   maxX = 0.0d, 
+				   maxY = 0.0d;
 	private boolean treshSet = false;
 	private TimeMeasureObject timemeasure = null;
 	
@@ -57,7 +62,7 @@ public class SQLMosaicDataListManager implements java.io.Serializable {
 		    entries = new java.util.Vector();
 		    
 		    if (treshSet) {
-		//        rSet = sysCore.getDB().sendQuery(new SQLScatterDataList(sysCore.getDBProps().getDBType()).getList(table,x,y,minX,minY,maxX,maxY));
+		        rSet = sysCore.getDB().sendQuery(new SQLScatterDataList(sysCore.getDBProps().getDBType()).getList(table,x,y,minX,minY,maxX,maxY,sx,sy));
 		    }
 		    else {
 		        rSet = sysCore.getDB().sendQuery(new SQLScatterDataList(sysCore.getDBProps().getDBType()).getList(table,x,y));
@@ -101,6 +106,19 @@ public class SQLMosaicDataListManager implements java.io.Serializable {
 	
 	public SimpleDataObject elementAt(int _pos){
 	    return (SimpleDataObject) entries.elementAt(_pos);
+	}
+	
+	/*
+	 * sets min,max bounds from brush area
+	 */
+	public void setBounds(double _minX, double _minY, double _maxX, double _maxY,String _sx, String _sy){
+	    minX = _minX;
+	    maxX = _maxX;
+	    minY = _minY;
+	    maxY = _maxY;
+	    sx = _sx;
+	    sy = _sy;
+	    treshSet = true;
 	}
 	
 	/*

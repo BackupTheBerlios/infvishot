@@ -1,10 +1,10 @@
 #UTF-8
-#Thu Apr 28 18:52:47 CEST 2005
+#Sat Apr 30 14:01:36 CEST 2005
 proxyUsername=
-decimalseperatorsign=.
-proxyEnable=false
 proxySocks=false
+proxyEnable=false
+decimalseperatorsign=.
 proxyPassword=
-proxyAuthentication=false
 proxyPort=
+proxyAuthentication=false
 proxyServer=
