@@ -8,10 +8,7 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import javax.swing.*;
 import java.util.*;
-
 //TODO: Adjust round methods in MosaicArea (paint --> gapX&gapY) and MosaicRectanel setCoordinates
-
-
 public class MosaicArea extends DrawMosaic{
 	final static Color recCol = Color.BLUE,
 					   filledRecCol = Color.RED,
@@ -19,7 +16,7 @@ public class MosaicArea extends DrawMosaic{
 					   backGround = Color.DARK_GRAY;
 	public final static Font DEFAULT_FONT = new Font("TimesRoman",Font.PLAIN,9),
 	 								 tr10 = new Font("Arial",Font.PLAIN,10),
-									 tr12 = new Font("TimesRoman",Font.BOLD,12);
+									 tr12 = new Font("Arial",Font.BOLD,12);
 	public final static int[] margins = new int[4];
 	private MosaicRectangel rec;
 	private Vector colNames, rowNames, Rectangles, hash, fontPos, selectedRects, sortSelRects;
@@ -27,6 +24,7 @@ public class MosaicArea extends DrawMosaic{
 	private MosaicRectangel temp, temp2;
 	private double dist;
 	private boolean rectsFilled = false;
+	private MosaicRectangel[] ArrayRectangles;
 	
 	public MosaicArea(int width, int height, Vector h, double distance){
 		super(width, height);
@@ -47,7 +45,6 @@ public class MosaicArea extends DrawMosaic{
 		
 		sortRects();
 	}
-
 /////////////////////////////////////////////////////////////////////////////////////////	
 	//sort rectangles for output
 	public void sortRects(){
@@ -97,9 +94,9 @@ public class MosaicArea extends DrawMosaic{
 				}
 			}
 		}
-		
+		ArrayRectangles = new MosaicRectangel[Rectangles.size()];
+		Rectangles.copyInto(ArrayRectangles);
 	}
-
 /////////////////////////////////////////////////////////////////////////////////////////	
 	private MosaicRectangel calcSrects(MosaicRectangel mosai1, MosaicRectangel mosai2){
 		int xxx;
@@ -126,7 +123,27 @@ public class MosaicArea extends DrawMosaic{
 		
 		return mosai1;
 	}
-
+/////////////////////////////////////////////////////////////////////////////////////////	
+	//check if first column contains every possible row category
+	// if not --> print the row names in fixed Positions
+	private boolean fontPositionCheck(){
+		boolean fontCheck = false;
+		for(int k=0; k<rowNames.size(); k++){
+			if(ArrayRectangles[0].getIdentifier1() != ArrayRectangles[k].getIdentifier1())
+				fontCheck = true;
+		}	
+		return fontCheck;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////	
+	// calcualte right font Positions if fontPositionCheck returns true
+	private void calcFontPos(){
+		int t =(int) absHeight/rowNames.size();
+		int yRun = absHeight - margins[1]-(int)t/2 +10;
+		for(int i=0; i<rowNames.size(); i++){
+			setFontPos((String)rowNames.get(i), 0, yRun);
+			yRun = yRun - t;
+		}
+	}
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public void paint(Graphics g){
 		temp2 = new MosaicRectangel(5.1,5.1,"h&h");
@@ -161,7 +178,12 @@ public class MosaicArea extends DrawMosaic{
 			//calculate x and y position of text
 			if(actualXpos == margins[0]){
 				int uepsilon = (int)actualYpos+(temp.getIntH()/2);
-				setFontPos(temp.getIdentifier2(),0, uepsilon);
+				if(actualYpos == margins[3] && fontPositionCheck()){
+					calcFontPos();
+				}
+				else
+					if(!fontPositionCheck())
+						setFontPos(temp.getIdentifier2(),0, uepsilon);
 			}
 			if(actualYpos == margins[3]){
 				int ix = (int)actualXpos+(temp.getIntW()/2);
@@ -199,6 +221,7 @@ public class MosaicArea extends DrawMosaic{
 			Integer yy = (Integer)fp.get(2);
 			
 			g2.drawString((String)fp.get(0), xx.intValue(), yy.intValue());
+			System.out.println("fp= "+fp);
 		}
 		
 		//paint additional Recs inside of old Rects --> fill old Rects
@@ -236,7 +259,6 @@ public class MosaicArea extends DrawMosaic{
 		
 		fontPos.add(temp);
 	}
-
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public void refreshSize(){
 		int [] sss = new int[2];
@@ -249,8 +271,7 @@ public class MosaicArea extends DrawMosaic{
 		rowNames.clear();
 		//fontPos.clear();
 		if (fontPos != null) fontPos.clear();
-
-		
+		//fontCheck = false;
 		sortRects();
 		
 		System.out.println("*****************************************");
@@ -259,14 +280,12 @@ public class MosaicArea extends DrawMosaic{
 		repaint();
 		//resetGr();
 	}
-
 /////////////////////////////////////////////////////////////////////////////////////////	
 	//decide if rects should be brushed with data from Scatterplot or not
 	public void setRectsFilled(boolean boo){
 		rectsFilled = boo;
 		//this.repaint();
 	}
-
 /////////////////////////////////////////////////////////////////////////////////////////	
 	//now fill them
 	public void fill(Vector vec){
