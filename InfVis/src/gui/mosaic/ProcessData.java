@@ -79,7 +79,7 @@ public class ProcessData{
 			h = (h/height);
 			h = h-(h*dist);
 			
-			buildRectangle(w, h, IdElement, w, h);
+			buildRectangle(w, h, IdElement, tempw, temph);
 		}
 	}
 	

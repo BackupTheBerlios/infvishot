@@ -28,10 +28,12 @@ public class MosaicRectangel{
 	// save ID count
 	public void setID1count(int cnt){
 		id1count = cnt;
+		System.out.println("ID1 cnt ="+cnt);
 	}
 	
 	public void setID2count(int cnt){
 		id2count = cnt;
+		System.out.println("ID2 cnt ="+cnt);
 	}
 /////////////////////////////////////////////////////////////////////	
 	// return ID count

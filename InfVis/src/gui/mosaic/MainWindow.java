@@ -114,15 +114,18 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 	}
 	
 	public void fillRects(String[][] selData, String[] selDataNam){
-		selectedData = selData;
-		selectedDataNames = selDataNam;
-		
-		selected = new DataObject(selectedDataNames, selectedData);
-		filledProzi = new ProcessData(selected, selectedDataNames[0], selectedDataNames[1]);
-		mos.fill(filledProzi.getVector());
-		mos.setRectsFilled(true);
-		
-	}
+        selectedData = selData;
+        selectedDataNames = selDataNam;
+
+        selected = new DataObject(selectedDataNames, selectedData);
+        filledProzi = new ProcessData(selected, selectedDataNames[0], selectedDataNames[1]);
+        mos.fill(filledProzi.getVector());
+        mos.setRectsFilled(true);
+        mos.repaint();
+        this.updateUI();
+        //resizeMos();
+        //resizeMos();
+}
 	
 	
 	/* (non-Javadoc)

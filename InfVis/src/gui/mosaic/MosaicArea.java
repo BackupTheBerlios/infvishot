@@ -109,8 +109,13 @@ public class MosaicArea extends DrawMosaic{
 		
 		//mosi1.setDrawAreaSize(mosi2.getIntW(), mosi2.getIntH());
 		mosai1.setIntWidth(mosai2.getIntW()-6);
-		hehe = mosai2.getID2count()/mosai1.getID2count();
-		hehe = mosai2.getIntH()*hehe;
+		hehe =(double) mosai1.getID2count()/mosai2.getID2count();
+		
+		System.out.println("mosai1.getID2count()="+mosai1.getID2count());
+		System.out.println("mosai2.getID2count()="+mosai2.getID2count());
+		System.out.println(hehe);
+		
+		hehe = (mosai2.getIntH()*hehe)-6;
 		Double tempH = new Double(hehe);
 		mosai1.setIntHeight(tempH.intValue());
 		
@@ -242,7 +247,9 @@ public class MosaicArea extends DrawMosaic{
 		Rectangles.clear();
 		colNames.clear();
 		rowNames.clear();
+		//fontPos.clear();
 		if (fontPos != null) fontPos.clear();
+
 		
 		sortRects();
 		
@@ -257,7 +264,7 @@ public class MosaicArea extends DrawMosaic{
 	//decide if rects should be brushed with data from Scatterplot or not
 	public void setRectsFilled(boolean boo){
 		rectsFilled = boo;
-		this.repaint();
+		//this.repaint();
 	}
 
 /////////////////////////////////////////////////////////////////////////////////////////	
