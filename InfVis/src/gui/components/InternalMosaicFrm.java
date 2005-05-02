@@ -21,6 +21,7 @@ import javax.swing.JButton;
 import gui.mosaic.MainWindow;
 import javax.swing.JComboBox;
 
+import javax.swing.JCheckBox;
 public class InternalMosaicFrm extends JInternalFrame {
     private static SysCore sysCore = null;
     private JMenuItem jMenuItem = null;    
@@ -33,6 +34,7 @@ public class InternalMosaicFrm extends JInternalFrame {
 	private JLabel jLabel1 = null;
 	public JComboBox jComboBox = null;
 	public JComboBox jComboBox1 = null;
+	private JCheckBox jCheckBox = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -93,7 +95,7 @@ public class InternalMosaicFrm extends JInternalFrame {
 		//jPanel1.removeAll(); //H
 		//jPanel1.add(new MainWindow(sscdlm.getDataArray(),names), java.awt.BorderLayout.CENTER); //H
 		mainWindow.setData(sscdlm.getDataArray(),names);
-		
+		mainWindow.Markers(jCheckBox.isSelected());
 	    //mainWindow.setData(sscdlm.getDataArray(),names);
 	    tmo.stop();
 	    sysCore.getMainFrm().iperformancefrm.addTimeRow(1,sscdlm.getTime().getTimeDiff(),tmo.getTimeDiff(),"PaintMosaic",sscdlm.getDataArray()[0].length);
@@ -154,6 +156,7 @@ public class InternalMosaicFrm extends JInternalFrame {
 			jPanel = new JPanel();
 			jLabel.setText("Spalte 1:");
 			jLabel1.setText("Spalte 2:");
+			jPanel.add(getJCheckBox(), null);
 			jPanel.add(jLabel, null);
 			jPanel.add(getJComboBox(), null);
 			jPanel.add(jLabel1, null);
@@ -186,7 +189,7 @@ public class InternalMosaicFrm extends JInternalFrame {
 	 */    
 	private MainWindow getMainWindow() {
 		if (mainWindow == null) {
-			mainWindow = new MainWindow();
+			mainWindow = new MainWindow(false);
 		}
 		return mainWindow;
 	}
@@ -212,4 +215,21 @@ public class InternalMosaicFrm extends JInternalFrame {
 		}
 		return jComboBox1;
 	}
-     }  //  @jve:decl-index=0:visual-constraint="10,30"
+	/**
+	 * This method initializes jCheckBox	
+	 * 	
+	 * @return javax.swing.JCheckBox	
+	 */    
+	private JCheckBox getJCheckBox() {
+		if (jCheckBox == null) {
+			jCheckBox = new JCheckBox();
+			jCheckBox.setText("Marker anzeigen");
+			jCheckBox.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+					mainWindow.Markers(jCheckBox.isSelected());
+				}
+			});
+		}
+		return jCheckBox;
+	}
+      }  //  @jve:decl-index=0:visual-constraint="10,30"

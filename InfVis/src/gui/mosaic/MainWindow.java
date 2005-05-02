@@ -27,7 +27,7 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 	//public boolean RectsFilled = false;
 	//public double dist = 0.1;
 	
-	public MainWindow(){
+	public MainWindow(boolean _showmarker){
 	    datas = new String [2][7];
 		names = new String[2];
 		
@@ -51,13 +51,17 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 		names[1] = "Spalte2";
 		
 		initialize();
+		
+		this.Markers(_showmarker);
 	}
 	
-	public MainWindow(String[][] data, String[] nam){
+	public MainWindow(String[][] data, String[] nam, boolean _showmarker){
 		datas = data;
 		names = nam;
 		
 		initialize();
+		
+		this.Markers(_showmarker);
 	}
 	
 	public void setData(String[][] data, String[] nam){
@@ -125,8 +129,15 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
         this.updateUI();
         //resizeMos();
         //resizeMos();
-}
+	}
 	
+	//enable or disable Markers
+    public void Markers(boolean b){
+        mos.markerSwitch = b;
+        mos.repaint();
+        this.updateUI();
+
+    }
 	
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)

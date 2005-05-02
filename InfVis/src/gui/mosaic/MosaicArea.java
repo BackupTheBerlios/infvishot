@@ -13,6 +13,7 @@ public class MosaicArea extends DrawMosaic{
 	final static Color recCol = Color.BLUE,
 					   filledRecCol = Color.RED,
 					   fontCol = Color.BLACK,
+					   markerCol = Color.BLACK,
 					   backGround = Color.DARK_GRAY;
 	public final static Font DEFAULT_FONT = new Font("TimesRoman",Font.PLAIN,9),
 	 								 tr10 = new Font("Arial",Font.PLAIN,10),
@@ -25,6 +26,9 @@ public class MosaicArea extends DrawMosaic{
 	private double dist;
 	private boolean rectsFilled = false;
 	private MosaicRectangel[] ArrayRectangles;
+	private Polygon[] markers;
+	public boolean markerSwitch = false;
+	private AffineTransform restore;
 	
 	public MosaicArea(int width, int height, Vector h, double distance){
 		super(width, height);
@@ -129,9 +133,10 @@ public class MosaicArea extends DrawMosaic{
 	private boolean fontPositionCheck(){
 		boolean fontCheck = false;
 		for(int k=0; k<rowNames.size(); k++){
-			if(ArrayRectangles[0].getIdentifier1() != ArrayRectangles[k].getIdentifier1())
+			if(!ArrayRectangles[0].getIdentifier1().equals(ArrayRectangles[k].getIdentifier1()))
 				fontCheck = true;
 		}	
+		//System.out.println(fontCheck);
 		return fontCheck;
 	}
 /////////////////////////////////////////////////////////////////////////////////////////	
@@ -140,10 +145,80 @@ public class MosaicArea extends DrawMosaic{
 		int t =(int) absHeight/rowNames.size();
 		int yRun = absHeight - margins[1]-(int)t/2 +10;
 		for(int i=0; i<rowNames.size(); i++){
-			setFontPos((String)rowNames.get(i), 0, yRun);
+			setFontPos((String)rowNames.get(i), 0, yRun, true);
 			yRun = yRun - t;
 		}
 	}
+/////////////////////////////////////////////////////////////////////////////////////////
+	// count numer of Recs in the same col
+	private int getColCount(int f){
+		int cnt = 0;
+		for(int k=1; k<Rectangles.size()-f; k++){
+			if(ArrayRectangles[f].getIdentifier1().equals(ArrayRectangles[f+k].getIdentifier1())){
+				System.out.println(ArrayRectangles[f].getIdentifier1()+"    "+ArrayRectangles[f].getIdentifier1());
+				cnt++;
+			}
+		}	
+		System.out.println("COLCOUNT="+cnt);
+		return cnt;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////	
+	// calculate markers for each rectangle
+	private void calcMarkers(){
+		Vector tempi = new Vector();
+		markers = new Polygon[Rectangles.size()];
+		int cnt=0;
+		
+		for(int j=0; j<fontPos.size(); j++){
+			tempi = (Vector)fontPos.get(j);
+			for(int i=0; i<ArrayRectangles.length; i++){
+				String s = (String)tempi.get(0);
+				if(s.equals(ArrayRectangles[i].getIdentifier2())){
+					Integer ttt;
+					int[] x = new int[3];
+					int[] y = new int[3];
+					x[0] = ArrayRectangles[i].getCoodinates().x;
+					ttt = (Integer)tempi.get(2);
+					y[0] = ttt.intValue();
+					x[1] = x[0]+(int)absWidth/75;
+					y[1] = y[0]+(int)absHeight/100;
+					x[2] = x[1];
+					y[2] = y[0]-(int)absHeight/100;
+					
+					markers[cnt] = new Polygon(x, y, 3);
+					cnt++;
+				}
+			}
+		}
+	}
+/////////////////////////////////////////////////////////////////////////////////////////	
+/**	private AffineTransform getAffineTransform(int ix, int yps){
+		AffineTransform affi = new AffineTransform();
+		//affi.translate(-ix, -yps);
+		affi.rotate(Math.toRadians(270));
+		//affi.translate(ix, yps);
+		
+		return affi;
+	} **/
+	private AffineTransform getAffineTransform(int ix, int yps){
+		AffineTransform affi = new AffineTransform();
+		affi.rotate(Math.toRadians(270));
+		
+		AffineTransform affi1 = new AffineTransform();
+		affi1.concatenate(affi);
+		affi1.translate(-ix, -yps);
+		
+		return affi1;
+	}
+/////////////////////////////////////////////////////////////////////////////////////////	
+	/**private boolean isRowName(String rowN){
+		boolean uh = false;
+		for(int i=0; i<rowNames.size(); i++){
+			if(rowN.equals((String)rowNames.get(i)))
+				uh = true;
+		}
+		return uh;
+	}**/
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public void paint(Graphics g){
 		temp2 = new MosaicRectangel(5.1,5.1,"h&h");
@@ -156,7 +231,7 @@ public class MosaicArea extends DrawMosaic{
 		actualXpos = margins[0];
 		actualYpos = margins[3];
 		gapX = (int) ((absWidth-margins[0]-margins[2])/((colNames.size()-1)/dist))-1;
-		gapY = (int) ((absHeight-margins[1]-margins[3])/((rowNames.size()-1)/dist))-1;
+		gapY = (int) ((absHeight-margins[1]-margins[3])/(getColCount(0)/dist))-1;
 		
 		fontPos = new Vector();
 		
@@ -166,43 +241,54 @@ public class MosaicArea extends DrawMosaic{
 	
 		// draw rectangles in right order and on the right position
 		for(int i=0; i<Rectangles.size(); i++){
-			temp = (MosaicRectangel)Rectangles.get(i);
-			temp.setDrawAreaSize(absWidth-margins[0]-margins[2], absHeight-margins[1]-margins[3]);
-			temp.calcInts();
-			temp.setCoordinates(actualXpos, actualYpos);
-			Rectangles.set(i, temp);		// save the modified rectangle in Vector
+			ArrayRectangles[i].setDrawAreaSize(absWidth-margins[0]-margins[2], absHeight-margins[1]-margins[3]);
+			ArrayRectangles[i].calcInts();
+			
+			// check if this Rec is the only one in this col
+			// if yes, then increase the Height of the Rec
+			if(getColCount(i)==0 && actualYpos==margins[3]){
+				ArrayRectangles[i].setIntHeight(absHeight-margins[1]-margins[3]-5);
+			}
+			ArrayRectangles[i].setCoordinates(actualXpos, actualYpos);
+			Rectangles.set(i, ArrayRectangles[i]);		// save the modified rectangle in Vector
 			
 			g2.setPaint(recCol);
-			g2.fill(temp.returnRect());
+			g2.fill(ArrayRectangles[i].returnRect());
 			
 			//calculate x and y position of text
 			if(actualXpos == margins[0]){
-				int uepsilon = (int)actualYpos+(temp.getIntH()/2);
+				int uepsilon = (int)actualYpos+(ArrayRectangles[i].getIntH()/2);
 				if(actualYpos == margins[3] && fontPositionCheck()){
 					calcFontPos();
 				}
 				else
 					if(!fontPositionCheck())
-						setFontPos(temp.getIdentifier2(),0, uepsilon);
+						setFontPos(ArrayRectangles[i].getIdentifier2(),0, uepsilon, true);
 			}
-			if(actualYpos == margins[3]){
-				int ix = (int)actualXpos+(temp.getIntW()/2);
-				setFontPos(temp.getIdentifier1(), ix-15, absHeight-10);
-			}
-			
+			//else{
+				if(actualYpos == margins[3]){
+					int ix = (int)actualXpos+(ArrayRectangles[i].getIntW()/2);
+					
+					//calc new YGap for each new col
+					if(getColCount(i)!=0){
+						gapY = (int) ((absHeight-margins[1]-margins[3])/(getColCount(i)/dist))-1;
+					}
+					setFontPos(ArrayRectangles[i].getIdentifier1(), ix-15, absHeight-10, false);
+				}
+			//}
 			
 			// calcualte new x and y position
 			if(i<Rectangles.size()-1){
-				temp2 = (MosaicRectangel)Rectangles.get(i+1);
-				if(!temp2.getIdentifier1().equals(temp.getIdentifier1())){
+				//temp2 = (MosaicRectangel)Rectangles.get(i+1);
+				if(!ArrayRectangles[i+1].getIdentifier1().equals(ArrayRectangles[i].getIdentifier1())){
 					actualYpos=margins[3];
-					actualXpos = actualXpos + temp.getIntW() + gapX;
+					actualXpos = actualXpos + ArrayRectangles[i].getIntW() + gapX;
 				}
 				else
-					actualYpos = actualYpos + temp.getIntH() + gapY;
+					actualYpos = actualYpos + ArrayRectangles[i].getIntH() + gapY;
 			}
 			else
-				actualYpos = actualYpos + temp.getIntH() + gapY;
+				actualYpos = actualYpos + ArrayRectangles[i].getIntH() + gapY;
 		
 				
 			/**System.out.println("------------------------------------------");
@@ -210,19 +296,6 @@ public class MosaicArea extends DrawMosaic{
 			System.out.println("X="+actualXpos+"  Y="+actualYpos);**/
 		}
 		
-		g2.setPaint(fontCol);
-		g2.setFont(tr12);
-		//print text
-		for(int i=0; i<fontPos.size(); i++){
-			Vector fp = new Vector();
-			fp = (Vector)fontPos.get(i);
-			
-			Integer xx = (Integer)fp.get(1);
-			Integer yy = (Integer)fp.get(2);
-			
-			g2.drawString((String)fp.get(0), xx.intValue(), yy.intValue());
-			System.out.println("fp= "+fp);
-		}
 		
 		//paint additional Recs inside of old Rects --> fill old Rects
 		if(rectsFilled){
@@ -245,17 +318,49 @@ public class MosaicArea extends DrawMosaic{
 			}
 		}
 		
+		if(markerSwitch){
+			calcMarkers();
+			for(int i=0; i<markers.length; i++){
+				g2.setColor(markerCol);
+				g2.fill(markers[i]);
+			}
+		}
+		
+		
+		g2.setPaint(fontCol);
+		g2.setFont(tr12);
+		restore = g2.getTransform();
+		//print text
+		for(int i=0; i<fontPos.size(); i++){
+			Vector fp = new Vector();
+			fp = (Vector)fontPos.get(i);
+			
+			Integer xx = (Integer)fp.get(1);
+			Integer yy = (Integer)fp.get(2);
+			
+			g2.drawString((String)fp.get(0), xx.intValue(), yy.intValue());
+		}
+		
+		String shit = "Fuck You!";
+		//g2.translate(-absWidth, -absHeight);
+		//g2.translate(-200, -200);
+		g2.rotate(Math.toRadians(45));
+		//g2.translate(absWidth, absHeight);
+		//g2.translate(200, 200);
+		g2.drawString(shit, 0, 0);
+		g2.fillRect(0, 0, 60, 40);
 	}
-	
 /////////////////////////////////////////////////////////////////////////////////////////	
 	//save position for each String
-	public void setFontPos(String text, int x, int y){
+	public void setFontPos(String text, int x, int y, boolean bool){
 		Vector temp = new Vector();
 		Integer X = new Integer(x);
 		Integer Y = new Integer(y);
 		temp.add(text);
 		temp.add(X);
 		temp.add(Y);
+		Boolean buhl = new Boolean(bool);
+		temp.add(buhl);
 		
 		fontPos.add(temp);
 	}
