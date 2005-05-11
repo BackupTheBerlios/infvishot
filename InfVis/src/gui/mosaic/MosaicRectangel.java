@@ -2,12 +2,15 @@ package gui.mosaic;
 
 import java.awt.Rectangle;
 import java.awt.Point;
+import java.awt.*;
 
 public class MosaicRectangel{
 	private Rectangle rect;
 	private String id1, id2;
 	private double width, height;
 	private int intWidth, intHeight, areaWidth, areaHeight, id1count, id2count;
+	private boolean selected=false;
+	private Polygon Marker;
 	
 	public MosaicRectangel(double w, double h, String id1id2){
 		id1 = id1id2.substring(1, id1id2.lastIndexOf('&'));
@@ -28,12 +31,12 @@ public class MosaicRectangel{
 	// save ID count
 	public void setID1count(int cnt){
 		id1count = cnt;
-		System.out.println("ID1 cnt ="+cnt);
+		//System.out.println("ID1 cnt ="+cnt);
 	}
 	
 	public void setID2count(int cnt){
 		id2count = cnt;
-		System.out.println("ID2 cnt ="+cnt);
+		//System.out.println("ID2 cnt ="+cnt);
 	}
 /////////////////////////////////////////////////////////////////////	
 	// return ID count
@@ -139,6 +142,27 @@ public class MosaicRectangel{
 	public Rectangle returnRect(){
 		return rect;
 	}
+/////////////////////////////////////////////////////////////////////
+	//set boolean to specify whether a rec is marked or not
+	public void setFlag(boolean b){
+		selected = b;
+	}
+
+	//return actual status
+	public boolean getFlag(){
+		return selected;
+	}
+/////////////////////////////////////////////////////////////////////
+	// create the Marker Polygon
+	public void setMarker(int[] x, int[] y, int nr){
+		Marker = new Polygon(x, y, nr);
+	}
+	
+	// return the Marker Polygon
+	public Polygon getMarker(){
+		return Marker;
+	}
+	
 /////////////////////////////////////////////////////////////////////
 	//recalculate dimensions of Rectangle
 	//public void setSize(int w, int h){
