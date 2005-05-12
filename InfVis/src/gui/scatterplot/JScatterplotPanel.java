@@ -40,6 +40,10 @@ public class JScatterplotPanel extends JPanel implements ActionListener, MouseLi
 		initialize(_d);		
 	}
 	
+	public ScatterArea getScatterArea(){
+	    return scap;
+	}
+	
 	private void initialize(Dimension _d){
 		//this.setContentPane(getMyContentPane());
 		//this.setContentPane(getScatterPane());

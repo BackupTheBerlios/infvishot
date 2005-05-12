@@ -11,6 +11,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import sys.helpers.TimeMeasureObject;
+import sys.sql.managers.SQLMosaicDataListManager;
 import sys.sql.managers.SQLScatterDataListManager;
 
 public class ScatterArea extends DrawArea implements MouseListener, MouseMotionListener{
@@ -462,6 +463,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		    TimeMeasureObject tmo1 = new TimeMeasureObject();
 		    tmo1.start();
 		    sqlspmanager.getSysCore().getMainFrm().imosaicfrm.fillMosaic(tempMinX,tempMinY,tempMaxX,tempMaxY,sqlspmanager.getStringDataArray());
+		    sqlspmanager.getSysCore().getMainFrm().imosaicfrm.mainWindow.setSQLManager(new SQLMosaicDataListManager(sqlspmanager.getSysCore(),sqlspmanager.getSysCore().getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),sqlspmanager.getSysCore().getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString(), sqlspmanager.getSysCore().getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString(),sqlspmanager.getSysCore().getMainFrm().iscatterfrm.jComboBoxXAxis.getSelectedItem().toString(),sqlspmanager.getSysCore().getMainFrm().iscatterfrm.jComboBoxYAxis.getSelectedItem().toString(),false));
 		    tmo1.stop();
 		    
 		    sqlspmanager.getSysCore().getMainFrm().iperformancefrm.addTimeRow(2,sqlspmanager.getTime().getTimeDiff(),tmo.getTimeDiff(),tmo1.getTimeDiff(),"Select Scatterplot",sqlspmanager.getDataArray().length);
@@ -486,6 +488,31 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		    }
 		}
 		repaint();
+	}
+	
+	public void checkEnclosedPoints(double[][] _data){
+	    for (int i=0; i<width; i++){
+			for (int k=0; k<height; k++){
+				if (objects[i][k] < 0) objects[i][k]*=(-1);
+			}
+		}
+	    
+	    objectsEnclosed = false;
+	    
+	    for (int i=0; i<_data.length; i++){
+	        int arrayX = Math.max(0,convertX(_data[i][0]));
+	        arrayX = Math.min(width-1,convertX(_data[i][0]));
+	        
+	        int arrayY = Math.max(0,convertY(_data[i][1]));
+	        arrayY = Math.min(height-1,convertY(_data[i][1]));
+	        
+	        if (objects[arrayX][arrayY] > 0){
+	            objects[arrayX][arrayY]=(-1)*objects[arrayX][arrayY];
+	            objectsEnclosed = true;
+	        }
+	    }
+	    
+	    repaint();
 	}
 	
 	public int[] getNumberOfEnclosedPoints(){

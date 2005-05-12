@@ -12,6 +12,7 @@ import javax.swing.JMenuItem;
 
 import sys.helpers.TimeMeasureObject;
 import sys.main.SysCore;
+import sys.sql.managers.SQLMosaicDataListManager;
 import sys.sql.managers.SQLScatterDataListManager;
 
 import javax.swing.JLabel;
@@ -94,6 +95,7 @@ public class InternalScatterFrm extends JInternalFrame {
 	    names[0] = sysCore.getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString();
 		names[1] = sysCore.getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString();
 		
+		sysCore.getMainFrm().imosaicfrm.mainWindow.setSQLManager(new SQLMosaicDataListManager(sysCore,sysCore.getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),sysCore.getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString(), sysCore.getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString(),sysCore.getMainFrm().iscatterfrm.jComboBoxXAxis.getSelectedItem().toString(),sysCore.getMainFrm().iscatterfrm.jComboBoxYAxis.getSelectedItem().toString(),false));
 	    sysCore.getMainFrm().imosaicfrm.mainWindow.setData(sscdlm.getStringDataArray(),names);
 	    sysCore.getMainFrm().imosaicfrm.mainWindow.Markers(sysCore.getMainFrm().imosaicfrm.jCheckBox.isSelected());
 	    

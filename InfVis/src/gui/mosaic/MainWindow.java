@@ -10,6 +10,11 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.*;
+
+import sys.helpers.TimeMeasureObject;
+import sys.sql.managers.SQLMosaicDataListManager;
+import sys.sql.managers.SQLScatterDataListManager;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -23,9 +28,14 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 	private String[][] datas, selectedData;
 	private String[] names, selectedDataNames;
 	private ProcessData prozi, filledProzi;
+	private SQLMosaicDataListManager sqlmd = null;
 	//private DataCount DataCounter;
 	//public boolean RectsFilled = false;
 	//public double dist = 0.1;
+	
+	public void setSQLManager(SQLMosaicDataListManager _sqlm){
+	    sqlmd = _sqlm;
+	}
 	
 	public MainWindow(boolean _showmarker){
 	    datas = new String [2][7];
@@ -197,6 +207,67 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 		}
 		mos.repaint();
 		this.updateUI();
+		
+		Vector tmpv = new Vector();
+		if (returnQuery() != null && sqlmd != null){
+		    for (int i=0; i<returnQuery().length; i++){
+		        if (returnQuery()[i] == null)
+		            continue;
+		        StringBuffer sb1 = new StringBuffer();
+		        
+		        for (int j=1; j<returnQuery()[i].length; j++){
+		            if (returnQuery()[i][j] == null)
+		                continue;
+		        //    System.out.println(returnQuery()[i][j] + "i:" + i + " j: " + j + " " + returnQuery()[i].length);
+		            
+		            String tmp_s = "";
+		            if (j < returnQuery()[i].length - 1) {
+		                tmp_s = " OR ";
+		            }
+		            sb1.append(returnQuery()[i][0] + "='" + returnQuery()[i][j] + "' " +  tmp_s);
+		        }
+		        
+		       // System.out.println("(" + sb1.toString() + " 1=2)");
+		        
+		        tmpv.addElement("(" + sb1.toString() + " 1=2)");
+		    }
+		}
+		
+		if (tmpv.size() > 0) {
+		    StringBuffer sb = new StringBuffer();
+		    
+		    for (int i=0; i<tmpv.size(); i++){
+		        sb.append(tmpv.elementAt(i) + " AND ");
+		    }
+		    
+		    String o_query = "(" +  sb.toString() + " 1=1)";
+		    
+		    sqlmd.loadData(o_query);
+		    
+		    TimeMeasureObject tmo1 = new TimeMeasureObject();
+		    tmo1.start();
+		    SQLScatterDataListManager tmpssdlm = new SQLScatterDataListManager(sqlmd.getSysCore(),sqlmd.getSysCore().getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),sqlmd.getSysCore().getMainFrm().iscatterfrm.jComboBoxXAxis.getSelectedItem().toString(),sqlmd.getSysCore().getMainFrm().iscatterfrm.jComboBoxYAxis.getSelectedItem().toString(),sqlmd.getSysCore().getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString(),sqlmd.getSysCore().getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString(),false);
+		    sqlmd.getSysCore().getMainFrm().iscatterfrm.jScatterplotPanel.setSQLSPManager(tmpssdlm);
+		    sqlmd.getSysCore().getMainFrm().iscatterfrm.jScatterplotPanel.getScatterArea().checkEnclosedPoints(sqlmd.getDoubleDataArray());
+		   // sqlmd.getSysCore().getMainFrm().iscatterfrm.jScatterplotPanel.updateUI();
+		    tmo1.stop();
+		    
+		    int tmp_ll = 0;
+		    try {
+		        if (sqlmd.getDoubleDataArray()[0] == null) {
+		            tmp_ll = 0;
+		        }
+		        else {
+		            tmp_ll = sqlmd.getDoubleDataArray()[0].length;
+		        }
+		    }
+		    catch (Exception exc){
+		        
+		    }
+		    sqlmd.getSysCore().getMainFrm().iperformancefrm.addTimeRow(1,sqlmd.getTime().getTimeDiff(),tmo1.getTimeDiff(),0,"PaintScatter",tmp_ll);
+		    
+		    
+		}
 	}
 	
 	// returns actual Query

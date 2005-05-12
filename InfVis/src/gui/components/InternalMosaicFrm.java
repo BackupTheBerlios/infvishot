@@ -97,6 +97,7 @@ public class InternalMosaicFrm extends JInternalFrame {
 		//jPanel1.add(new MainWindow(sscdlm.getDataArray(),names), java.awt.BorderLayout.CENTER); //H
 		mainWindow.setData(sscdlm.getDataArray(),names);
 		mainWindow.Markers(jCheckBox.isSelected());
+		mainWindow.setSQLManager(sscdlm);
 	    //mainWindow.setData(sscdlm.getDataArray(),names);
 	    tmo.stop();
 	    

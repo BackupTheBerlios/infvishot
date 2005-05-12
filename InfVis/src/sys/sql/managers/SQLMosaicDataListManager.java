@@ -106,6 +106,49 @@ public class SQLMosaicDataListManager implements java.io.Serializable {
 		}
 	}
 	
+	public void loadData(String _query){
+		
+		try {
+		    timemeasure.start();
+		    ResultSet rSet = null;
+		    int cnt = 0;
+		    entries = new java.util.Vector();
+		    
+		    rSet = sysCore.getDB().sendQuery(new SQLScatterDataList(sysCore.getDBProps().getDBType()).getList(table,x,y,x1,y1,_query));
+		    
+		    rSet.last();
+		    //System.out.println(rSet.getRow());
+		    if (rSet.getRow() > 0){
+		        dData = new String[2][rSet.getRow()];
+		        ddData = new double[rSet.getRow()][2];
+		    }
+		    else {
+		        dData = new String[0][0];
+		        ddData = new double[0][0];
+		    }
+		    		    
+		    rSet.beforeFirst();
+		    
+			while(rSet.next()) {
+			   dData[0][cnt] = rSet.getString(1);
+			   dData[1][cnt] = rSet.getString(2);
+			   
+			   ddData[cnt][0] = rSet.getDouble(3);
+			   ddData[cnt][1] = rSet.getDouble(4);
+			   
+		//	   SimpleDataObject sdo = new SimpleDataObject("id"+cnt, rSet.getDouble(1), rSet.getDouble(2));
+		//	   addElement(sdo);
+			   cnt++;
+			}
+			
+			timemeasure.stop();
+			System.out.println(timemeasure.getTimeDiff()); //TODO: delete
+		}
+		catch (Exception e) {
+			new InfVisException("Fehler","Fehler beim Laden! " + e.getMessage(),false).showDialogMessage();
+		}
+	}
+	
 	
 	public void addElement(SimpleDataObject _data){
 	    entries.add(_data);
