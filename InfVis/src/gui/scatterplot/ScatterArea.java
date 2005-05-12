@@ -352,11 +352,17 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 			}
 		}
 		
-		//System.out.println(x+"/"+y + " with modifier: " + modifier);
+		System.out.println(x+"/"+y + " with modifier: " + modifier);
 		
 		rubEnd = false;
 		objectsEnclosed = false;
 		
+		// STRG wurde gedrückt & die maus
+		if (modifier == 18){
+			System.out.println("STRG");
+		}
+		
+		// nur maustaste, ohne tastatur!
 		if (modifier == 16){
 		
 			int yOrigin=height,

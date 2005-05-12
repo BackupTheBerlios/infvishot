@@ -140,7 +140,7 @@ public class JScatterplotPanel extends JPanel implements ActionListener, MouseLi
 	        scap.newData("id4",40,138);
 	    
 	        for (int i=5; i<8000; i++){
-	            scap.newData("id"+i,/*Math.cos(i)*/i,i);
+	            scap.newData("id"+i,Math.cos(i)/i,i);
 	            //System.out.println("processing point: id" + i);
 	        }
 	    }
