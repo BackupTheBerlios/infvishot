@@ -75,13 +75,14 @@ public class InternalPerformanceFrm extends JInternalFrame {
 		sysCore.getMainFrm().jMenu1.add(jMenuItem);
 	}
 	
-	public void addTimeRow(int id, long _time1, long _time2, String _typ, int _datacount){
-	    Object[] ox = new Object[5];
+	public void addTimeRow(int id, long _timedb, long _timesp, long _timemv, String _typ, int _datacount){
+	    Object[] ox = new Object[6];
 	    ox[0] = new Integer(id);
-	    ox[1] = new Long(_time1);
-	    ox[2] = new Long(_time2);
-	    ox[3] = new Integer(_datacount);
-	    ox[4] = _typ;
+	    ox[1] = new Long(_timedb);
+	    ox[2] = new Long(_timesp);
+	    ox[3] = new Long(_timemv);
+	    ox[4] = new Integer(_datacount);
+	    ox[5] = _typ;
 	    
 	    jTable.addRow(ox);
 	    
@@ -125,36 +126,26 @@ public class InternalPerformanceFrm extends JInternalFrame {
 	private CategoryDataset createDataset() {
 	    String series0 = "DB";
         String series1 = "Scatterpaint";
-        String series2 = "Scatterbrush";
+        String series2 = "Brush/Link";
         String series3 = "Mosaicpaint";
-        String series4 = "Mosaicbrush";
+        String series4 = "Brush/Link";
         
         // column keys...
         String[] category = new String[jTable.getRowCount()];
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (int i=0; i<category.length; i++){
-            category[i] = "i=" + i + ": " + jTable.getValueAt(i,3).toString();
+            category[i] = "i=" + i + ": " + jTable.getValueAt(i,4).toString();
             
             int tmpid = ((Integer)jTable.getValueAt(i,0)).intValue();
             long tmptime1 = ((Long)jTable.getValueAt(i,1)).longValue();
             long tmptime2 = ((Long)jTable.getValueAt(i,2)).longValue();
+            long tmptime3 = ((Long)jTable.getValueAt(i,3)).longValue();
             
             dataset.addValue(tmptime1, series0, category[i]);
             
-            switch (tmpid){
-            	case 1:
-            	    dataset.addValue(tmptime2, series1, category[i]);
-            	    break;
-            	case 2:
-            	    dataset.addValue(tmptime2, series2, category[i]);
-            	    break;
-            	case 3:
-            	    dataset.addValue(tmptime2, series3, category[i]);
-            	    break;
-            	case 4:
-            	    dataset.addValue(tmptime2, series4, category[i]);
-            	    break;
-            }
+            dataset.addValue(tmptime2, series1, category[i]);
+            dataset.addValue(tmptime3, series3, category[i]);
+            
         }
         
         return dataset;

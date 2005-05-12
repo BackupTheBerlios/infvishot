@@ -28,7 +28,7 @@ public class InternalScatterFrm extends JInternalFrame {
     private JMenuItem jMenuItem = null;    
 	private javax.swing.JPanel jContentPane = null;
 
-	private JScatterplotPanel jScatterplotPanel = null;
+	public JScatterplotPanel jScatterplotPanel = null;
 	private JPanel jPanel = null;
 	private JLabel jLabel = null;
 	public JComboBox jComboBoxXAxis = null;
@@ -71,7 +71,7 @@ public class InternalScatterFrm extends JInternalFrame {
 	    if (sysCore.isDebug())
 	        System.out.println("Start fetching data...");
 	    
-	    SQLScatterDataListManager sscdlm = new SQLScatterDataListManager(sysCore,sysCore.getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),jComboBoxXAxis.getSelectedItem().toString(), jComboBoxYAxis.getSelectedItem().toString(),true);
+	    SQLScatterDataListManager sscdlm = new SQLScatterDataListManager(sysCore,sysCore.getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),jComboBoxXAxis.getSelectedItem().toString(), jComboBoxYAxis.getSelectedItem().toString(),sysCore.getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString(),sysCore.getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString(),true);
 	    
 	    if (sysCore.isDebug())
 	        System.out.println("End fetching data...");
@@ -85,7 +85,21 @@ public class InternalScatterFrm extends JInternalFrame {
 	    jScatterplotPanel.fillWithData();
 	    jScatterplotPanel.updateUI();
 	    tmo.stop();
-	    sysCore.getMainFrm().iperformancefrm.addTimeRow(1,sscdlm.getTime().getTimeDiff(),tmo.getTimeDiff(),"PaintScatter",sscdlm.getDataArray().length);
+	    
+	    //Mosaic
+	    TimeMeasureObject tmo1 = new TimeMeasureObject();
+	    tmo1.start();
+	    
+	    String[] names =  new String[2];
+	    names[0] = sysCore.getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString();
+		names[1] = sysCore.getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString();
+		
+	    sysCore.getMainFrm().imosaicfrm.mainWindow.setData(sscdlm.getStringDataArray(),names);
+	    sysCore.getMainFrm().imosaicfrm.mainWindow.Markers(sysCore.getMainFrm().imosaicfrm.jCheckBox.isSelected());
+	    
+	    tmo1.stop();
+	    
+	    sysCore.getMainFrm().iperformancefrm.addTimeRow(1,sscdlm.getTime().getTimeDiff(),tmo.getTimeDiff(),tmo1.getTimeDiff(),"PaintScatter",sscdlm.getDataArray().length);
 	}
 	
 	/**

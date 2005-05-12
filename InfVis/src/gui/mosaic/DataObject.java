@@ -13,7 +13,12 @@ public class DataObject{
 	public DataObject(String[] Nam, String[][] Dat){
 		Names = Nam;
 		Data = Dat;
-		rows=Data[0].length;
+		if (Data.length > 0){
+		    rows=Data[0].length;
+		}
+		else {
+		    rows = 0;
+		}
 		cols=Data.length;
 	}
 	

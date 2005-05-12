@@ -20,7 +20,10 @@ public class SQLScatterDataListManager implements java.io.Serializable {
 	private String table = "";
 	private String x = "";
 	private String y = "";
+	private String x1 = "";
+	private String y1 = "";
 	private double[][] dData = null;
+	private String[][] sdData = null;
 	private double minX = 0.0d, 
 				   minY = 0.0d, 
 				   maxX = 0.0d, 
@@ -28,11 +31,13 @@ public class SQLScatterDataListManager implements java.io.Serializable {
 	private boolean treshSet = false;
 	private TimeMeasureObject timemeasure = null;
 	
-	public SQLScatterDataListManager(SysCore _sysCore, String _table, String _x, String _y, boolean _load) {
+	public SQLScatterDataListManager(SysCore _sysCore, String _table, String _x, String _y, String _x1, String _y1, boolean _load) {
 		sysCore = _sysCore;
 		table = _table;
 		x = _x;
 		y = _y;
+		x1 = _x1;
+		y1 = _y1;
 		entries = new java.util.Vector();
 		timemeasure = new TimeMeasureObject();
 		
@@ -60,19 +65,21 @@ public class SQLScatterDataListManager implements java.io.Serializable {
 		    entries = new java.util.Vector();
 		    
 		    if (treshSet) {
-		        rSet = sysCore.getDB().sendQuery(new SQLScatterDataList(sysCore.getDBProps().getDBType()).getList(table,x,y,minX,minY,maxX,maxY));
+		        rSet = sysCore.getDB().sendQuery(new SQLScatterDataList(sysCore.getDBProps().getDBType()).getList(table,x,y,x1,y1,minX,minY,maxX,maxY));
 		    }
 		    else {
-		        rSet = sysCore.getDB().sendQuery(new SQLScatterDataList(sysCore.getDBProps().getDBType()).getList(table,x,y));
+		        rSet = sysCore.getDB().sendQuery(new SQLScatterDataList(sysCore.getDBProps().getDBType()).getList(table,x,y,x1,y1));
 		    }
 		    
 		    rSet.last();
 		    //System.out.println(rSet.getRow());
 		    if (rSet.getRow() > 0){
 		        dData = new double[rSet.getRow()][2];
+		        sdData = new String[2][rSet.getRow()];
 		    }
 		    else {
 		        dData = new double[0][0];
+		        sdData = new String[0][0];
 		    }
 		    
 		    rSet.beforeFirst();
@@ -80,6 +87,9 @@ public class SQLScatterDataListManager implements java.io.Serializable {
 			while(rSet.next()) {
 			   dData[cnt][0] = rSet.getDouble(1);
 			   dData[cnt][1] = rSet.getDouble(2);
+			   
+			   sdData[0][cnt] = rSet.getString(3);
+			   sdData[1][cnt] = rSet.getString(4);
 			   
 		//	   SimpleDataObject sdo = new SimpleDataObject("id"+cnt, rSet.getDouble(1), rSet.getDouble(2));
 		//	   addElement(sdo);
@@ -158,6 +168,10 @@ public class SQLScatterDataListManager implements java.io.Serializable {
 	 */
 	public double[][] getDataArray(){
 	    return dData;
+	}
+	
+	public String[][] getStringDataArray(){
+	    return sdData;
 	}
 	
 	public SysCore getSysCore(){

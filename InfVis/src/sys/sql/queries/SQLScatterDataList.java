@@ -18,33 +18,33 @@ public class SQLScatterDataList extends SQLQuery implements Serializable {
 	}
 
 	/** List of  */
-	public String getList(String _table, String _x, String _y) {
+	public String getList(String _table, String _x, String _y, String _x1, String _y1) {
 		String outp = "";
 		
 		switch (sqlType) {
 			case 1: //MySQL
 			case 2: //HSQL
-				outp = "SELECT " + _x + ", " + _y + " " +
+				outp = "SELECT " + _x + ", " + _y + ", " + _x1 + ", " + _y1 + " " +
 					   "FROM " + _table + " "; 
 				break;
 		}
-		
+		System.out.println(outp);
 		return outp;
 	}
 	
 	/** List of with min,max */
-	public String getList(String _table, String _x, String _y, double minX, double minY, double maxX, double maxY) {
+	public String getList(String _table, String _x, String _y, String _x1, String _y1, double minX, double minY, double maxX, double maxY) {
 		String outp = "";
 		
 		switch (sqlType) {
 			case 1: //MySQL
 			case 2: //HSQL
-				outp = "SELECT " + _x + ", " + _y + " " +
+				outp = "SELECT " + _x + ", " + _y + ", " + _x1 + ", " + _y1 + " " +
 					   "FROM " + _table + " " +
 					   "WHERE " + _x + ">=" + minX + " AND " + _x + "<=" +  maxX + " AND " + _y + ">=" + minY + " AND " + _y + "<=" +  maxY + " "; 
 				break;
 		}
-		
+		System.out.println(outp);
 		return outp;
 	}
 	
@@ -55,12 +55,12 @@ public class SQLScatterDataList extends SQLQuery implements Serializable {
 		switch (sqlType) {
 			case 1: //MySQL
 			case 2: //HSQL
-				outp = "SELECT " + _x + ", " + _y + " " +
+				outp = "SELECT " + _x + ", " + _y + ", " + _spx + ", " + _spy + " " +
 					   "FROM " + _table + " " +
 					   "WHERE " + _spx + ">=" + minX + " AND " + _spx + "<=" +  maxX + " AND " + _spy + ">=" + minY + " AND " + _spy + "<=" +  maxY + " "; 
 				break;
 		}
-		
+		System.out.println(outp);
 		return outp;
 	}
 }

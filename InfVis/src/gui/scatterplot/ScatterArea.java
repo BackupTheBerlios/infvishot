@@ -457,10 +457,14 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		    }
 		    
 		    tmo.stop();
-		    sqlspmanager.getSysCore().getMainFrm().iperformancefrm.addTimeRow(2,sqlspmanager.getTime().getTimeDiff(),tmo.getTimeDiff(),"Select Scatterplot",sqlspmanager.getDataArray().length);
 		    
-		    //Mosaicview
-		    sqlspmanager.getSysCore().getMainFrm().imosaicfrm.fillMosaic(tempMinX,tempMinY,tempMaxX,tempMaxY);
+		    //Mosaic
+		    TimeMeasureObject tmo1 = new TimeMeasureObject();
+		    tmo1.start();
+		    sqlspmanager.getSysCore().getMainFrm().imosaicfrm.fillMosaic(tempMinX,tempMinY,tempMaxX,tempMaxY,sqlspmanager.getStringDataArray());
+		    tmo1.stop();
+		    
+		    sqlspmanager.getSysCore().getMainFrm().iperformancefrm.addTimeRow(2,sqlspmanager.getTime().getTimeDiff(),tmo.getTimeDiff(),tmo1.getTimeDiff(),"Select Scatterplot",sqlspmanager.getDataArray().length);
 		}
 		else {
 		    	    

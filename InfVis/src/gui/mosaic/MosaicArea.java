@@ -233,6 +233,22 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 		}
 		return uh;
 	}**/
+	
+	public static void drawRotatedString(String text,Graphics2D g2,float textX,float textY,double angle,float rotateX,float rotateY) {
+	    
+	    if ((text == null) || (text.equals(""))) {
+	        return;
+	    }
+	    
+	    AffineTransform saved = g2.getTransform();
+	    AffineTransform rotate = AffineTransform.getRotateInstance(
+	            angle, rotateX, rotateY
+	    );
+	    g2.transform(rotate);
+	    g2.drawString(text, textX, textY);
+	    g2.setTransform(saved);
+	}
+
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public void paint(Graphics g){
 		temp2 = new MosaicRectangel(5.1,5.1,"h&h");
@@ -393,6 +409,9 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 			Integer yy = (Integer)fp.get(2);
 			
 			g2.drawString((String)fp.get(0), xx.intValue(), yy.intValue());
+			
+			this.drawRotatedString((String)fp.get(0),g2,xx.intValue(),yy.intValue(),Math.toRadians(270),xx.intValue()+10,yy.intValue());  //TODO
+			
 		}
 		// draw RubRect
 		if(rubInit && rubRect!=null){

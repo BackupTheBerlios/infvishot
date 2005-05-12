@@ -171,6 +171,23 @@ public class JScatterplotPanel extends JPanel implements ActionListener, MouseLi
 		// TODO: Bei Größenänderung Daten neu schicken !!!
 	}
 		
+	public void fillWithData(double[] tmp_bounds, double[][] _data){
+	    //scap.resetAllObjects();
+	    if (sysCore.isDebug())
+	        System.out.println("Start fillWithData()...");
+	    
+	    scap.setMinMax(tmp_bounds[0],tmp_bounds[1],tmp_bounds[2],tmp_bounds[3]);
+	    
+	    for (int i=0; i<_data.length; i++){
+	        //System.out.println(_data[i][0] + " und " + _data[i][1]);
+	        scap.newData("id" + i, _data[i][0], _data[i][1]);
+	    }
+	    
+	    if (sysCore.isDebug())
+	        System.out.println("End fillWithData()...");
+	    
+	}
+	
 	public void setSQLSPManager(SQLScatterDataListManager _sqlspmanager){
 	    sqlspmanager = _sqlspmanager;
 	    scap.setSQLSPManager(sqlspmanager);

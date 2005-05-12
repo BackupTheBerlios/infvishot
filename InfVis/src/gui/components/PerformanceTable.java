@@ -13,7 +13,7 @@ import javax.swing.event.*;
 
 public class PerformanceTable extends JTable implements ListSelectionListener{
     private PlugTableModel model;
-	private String[] header = {"ID","Zeit DB","Zeit GUI","Datasets","Typ"};
+	private String[] header = {"ID","Zeit DB","Zeit Scatterplot", "Zeit Mosaicview","Datasets","Typ"};
 		
 	/**
 	 * 
