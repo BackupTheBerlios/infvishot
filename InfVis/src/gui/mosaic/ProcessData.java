@@ -84,18 +84,19 @@ public class ProcessData{
 	}
 	
 ////////////////////////////////////////////////////////////////////////////////	
-	// create rectangle and save in hashtable
-	public void buildRectangle(double width, double height, String key, double we, double ha){
+	// create rectangle and save in a Vector
+	public void buildRectangle(double wid, double heigh, String key, double we, double ha){
 		Double eidi1 = new Double(we);
 		Double eidi2 = new Double(ha);
 		
-		MosaicRectangel rec = new MosaicRectangel(width, height, key);
+		MosaicRectangel rec = new MosaicRectangel(wid, heigh, key);
 		rec.setID1count(eidi1.intValue());
 		rec.setID2count(eidi2.intValue());
+		rec.setTotalID1count(width);
 		//System.out.println(key.substring(1));
 		hash.add(rec);
 	}
-	
+
 ////////////////////////////////////////////////////////////////////////////////	
 	// return Vector with rectangles
 	public Vector getVector(){

@@ -92,7 +92,13 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         */
 		
-        mos = new MosaicArea(550, 500, prozi.getVector(), prozi.dist);
+        mos = new MosaicArea(550, 500, prozi.getVector(), prozi.dist){
+			public JToolTip createToolTip()
+			{
+				return new JMultiLineTooltip();
+			}
+		};
+		
         mos.addMouseListener(this);
         mos.addMouseMotionListener(this);
         this.add(mos,java.awt.BorderLayout.CENTER);
@@ -293,4 +299,31 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 		// TODO Auto-generated method stub
 		
 	}
+	
+////////////////////////////////////////////////////////////////////////////////////////
+	// change two cols
+	public void changeCols(String s1, String s2){
+		mos.changeColPos(s1, s2);
+		mos.repaint();
+		this.updateUI();
+	}
+	
+	public void changeRows(String s1, String s2){
+		mos.changeRowPos(s1, s2);
+		mos.repaint();
+		this.updateUI();
+	}
+	
+	//get all ColNames
+	public Vector getAllColnames(){
+		return mos.colNames;
+	}
+	
+	//get all RowNames
+	public Vector getAllRownames(){
+		return mos.rowNames;
+	}
+	
+/////////////////////////////////////////////////////////////////////////////////////////	
+
 }

@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import javax.swing.*;
+
 import java.util.*;
 
 //TODO: Adjust round methods in MosaicArea (paint --> gapX&gapY) and MosaicRectanel setCoordinates
@@ -14,22 +15,27 @@ import java.util.*;
 
 public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotionListener{
 	final static Color recCol = Color.BLUE,
-					   recDarkCol = Color.BLUE.darker(),	
+					   recDarkCol = Color.BLUE.darker(),
+					   recColMarked = Color.BLUE.darker().darker(),
 					   filledRecCol = Color.RED,
 					   filledRecdarkCol = Color.RED.darker(),
+					   filRecColMarked = Color.RED.darker().darker(),
 					   fontCol = Color.BLACK,
 					   markerCol = Color.BLACK,
-					   backGround = Color.DARK_GRAY;
+					   backGround = Color.LIGHT_GRAY;
 	public final static Font DEFAULT_FONT = new Font("TimesRoman",Font.PLAIN,9),
 	 								 tr10 = new Font("Arial",Font.PLAIN,10),
 									 tr12 = new Font("Arial",Font.BOLD,12);
+	public final static Cursor colDrag = new Cursor(13), defaultCur = new Cursor(0);
 	public final static int[] margins = new int[4];
 	private MosaicRectangel rec;
-	private Vector colNames, rowNames, Rectangles, hash, fontPos, selectedRects, sortSelRects;
+	public Vector colNames, rowNames;
+	private Vector Rectangles, hash, fontPos, selectedRects, sortSelRects;
 	private int actualXpos, actualYpos, absWidth, absHeight, gapX, gapY, 
-				rubXStart, rubXEnd, rubYStart, rubYEnd, initXRubStart, initYRubStart;
+				rubXStart, rubXEnd, rubYStart, rubYEnd, initXRubStart, initYRubStart,
+				lastXMousePosition, lastYMousePosition;
 	private MosaicRectangel temp, temp2;
-	private double dist;
+	private double dist, mouseVelocity;
 	private MosaicRectangel[] ArrayRectangles, selARecs;
 	//private Polygon[] markers;
 	private boolean rectsFilled = false, rubInit = false, ControlPressed = false, ShiftPressed = false;
@@ -37,6 +43,8 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 	private AffineTransform restore;
 	private Rectangle rubRect;
 	public String[][] Query;
+	ToolTipManager tool;
+	private String chosen;
 	
 	public MosaicArea(int width, int height, Vector h, double distance){
 		super(width, height);
@@ -50,6 +58,9 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 		
 		addMouseListener(this);
 	    addMouseMotionListener(this);
+	    tool = ToolTipManager.sharedInstance();
+	    tool.registerComponent(this);
+	    tool.setInitialDelay(1000);
 		
 		margins[0]=15;	//Reihenfolge: links, unten, rechts, oben
 		margins[1]=20;
@@ -57,15 +68,13 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 		margins[3]=5;
 		
 		//super.setBackground(backGround);
-		
+		getColandRowNames();
 		sortRects();
 	}
 
-/////////////////////////////////////////////////////////////////////////////////////////	
-	//sort rectangles for output
-	public void sortRects(){
-		//System.out.println("hallo");
-		
+/////////////////////////////////////////////////////////////////////////////////////////
+	// get all row and col Names
+	private void getColandRowNames(){
 		colNames = new Vector();
 		rowNames = new Vector();
 		Rectangles = new Vector();
@@ -85,7 +94,11 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 			System.out.println("ID1="+temp.getIdentifier1()+"   "+"ID2="+temp.getIdentifier2());
 			System.out.println("colNames="+colNames+"   "+"rowNames="+rowNames);**/
 		}
-		
+	}
+/////////////////////////////////////////////////////////////////////////////////////////	
+	//sort rectangles for output
+	private void sortRects(){
+		//System.out.println("hallo");
 		
 		String id1;
 		String id2;
@@ -113,7 +126,8 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 		ArrayRectangles = new MosaicRectangel[Rectangles.size()];
 		Rectangles.copyInto(ArrayRectangles);
 	}
-
+/////////////////////////////////////////////////////////////////////////////////////////	
+	// calc total ID2 count
 /////////////////////////////////////////////////////////////////////////////////////////	
 	private MosaicRectangel calcSrects(MosaicRectangel mosai1, MosaicRectangel mosai2){
 		int xxx;
@@ -224,17 +238,10 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 		
 		return affi1;
 	}
-/////////////////////////////////////////////////////////////////////////////////////////	
-	/**private boolean isRowName(String rowN){
-		boolean uh = false;
-		for(int i=0; i<rowNames.size(); i++){
-			if(rowN.equals((String)rowNames.get(i)))
-				uh = true;
-		}
-		return uh;
-	}**/
 	
-	public static void drawRotatedString(String text,Graphics2D g2,float textX,float textY,double angle,float rotateX,float rotateY) {
+/////////////////////////////////////////////////////////////////////////////////////////
+	//rotate Text
+	public void drawRotatedString(String text,Graphics2D g2,float textX,float textY,double angle,float rotateX,float rotateY) {
 	    
 	    if ((text == null) || (text.equals(""))) {
 	        return;
@@ -247,15 +254,23 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 	    g2.transform(rotate);
 	    g2.drawString(text, textX, textY);
 	    g2.setTransform(saved);
-	}
-
+}
+/////////////////////////////////////////////////////////////////////////////////////////	
+	/**private boolean isRowName(String rowN){
+		boolean uh = false;
+		for(int i=0; i<rowNames.size(); i++){
+			if(rowN.equals((String)rowNames.get(i)))
+				uh = true;
+		}
+		return uh;
+	}**/
 /////////////////////////////////////////////////////////////////////////////////////////	
 	public void paint(Graphics g){
 		temp2 = new MosaicRectangel(5.1,5.1,"h&h");
 		Graphics2D g2 = (Graphics2D) g;
 		
 		g2.setPaint(backGround);
-		//g2.fill(new Rectangle(0, 0, absWidth, absHeight));
+		g2.fill(new Rectangle(0, 0, absWidth, absHeight));
 		
 		
 		actualXpos = margins[0];
@@ -285,8 +300,10 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 			
 			//if rec intersects RubRect paint recs darker
 			if(ArrayRectangles[i].getFlag())g2.setPaint(recDarkCol);
-			else g2.setPaint(recCol);
-			
+			if(ArrayRectangles[i].colDragged)g2.setPaint(recColMarked);
+			if(!ArrayRectangles[i].getFlag() && !ArrayRectangles[i].colDragged) g2.setPaint(recCol);
+			//else g2.setPaint(recCol);
+				
 			g2.fill(ArrayRectangles[i].returnRect());
 			
 			//calculate x and y position of text
@@ -408,10 +425,11 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 			Integer xx = (Integer)fp.get(1);
 			Integer yy = (Integer)fp.get(2);
 			
-			g2.drawString((String)fp.get(0), xx.intValue(), yy.intValue());
+			Boolean bubu = (Boolean)fp.get(3);
+			if(bubu.booleanValue()){this.drawRotatedString((String)fp.get(0),g2,xx.intValue(),yy.intValue(),
+									Math.toRadians(270),xx.intValue()+10,yy.intValue());}
 			
-			this.drawRotatedString((String)fp.get(0),g2,xx.intValue(),yy.intValue(),Math.toRadians(270),xx.intValue()+10,yy.intValue());  //TODO
-			
+			else g2.drawString((String)fp.get(0), xx.intValue(), yy.intValue());
 		}
 		// draw RubRect
 		if(rubInit && rubRect!=null){
@@ -454,8 +472,8 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 		absHeight = sss[1];
 		
 		Rectangles.clear();
-		colNames.clear();
-		rowNames.clear();
+		//colNames.clear();
+		//rowNames.clear();
 		//fontPos.clear();
 		if (fontPos != null) fontPos.clear();
 
@@ -483,7 +501,99 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 		selectedRects = vec;
 		//sortSelRects();
 	}
-
+/////////////////////////////////////////////////////////////////////////////////////////
+	// change two rows
+	public void changeRowPos(String id21, String id22){
+		//Vector tempRowN =(Vector) rowNames.clone();
+		int id21Pos=0;
+		int id22Pos=0;
+		String s;
+		
+		for(int i=0; i<rowNames.size(); i++){
+			s = (String)rowNames.get(i);
+			if(s.equals(id21)) id21Pos=i;
+			if(s.equals(id22)) id22Pos=i;
+		}
+		rowNames.set(id21Pos, id22);
+		rowNames.set(id22Pos, id21);
+		
+		sortRects();
+	}
+/////////////////////////////////////////////////////////////////////////////////////////	
+	// change two cols
+	public void changeColPos(String id11, String id12){
+		MosaicRectangel[] tempA = (MosaicRectangel[])ArrayRectangles.clone();
+		Vector id11Pos = new Vector();
+		int id11cnt;
+		Vector id12Pos = new Vector();
+		int id12cnt;
+		
+		// get the Positions of all Recs of the col in the Array
+		for(int i=0; i<ArrayRectangles.length; i++){
+			if(ArrayRectangles[i].getIdentifier1().equals(id11)){
+				Integer inti = new Integer(i);
+				//System.out.println("id1= "+i+" ");
+				id11Pos.add(inti);
+			}
+			if(ArrayRectangles[i].getIdentifier1().equals(id12)){
+				Integer inti = new Integer(i);
+				id12Pos.add(inti);
+			//	System.out.println("id2= "+i+" ");
+			}
+		}
+		
+		//copy them into IntegerArray
+		Integer[] i1 = new Integer[id11Pos.size()];
+		id11Pos.copyInto(i1);
+		
+		Integer[] i2 = new Integer[id12Pos.size()];
+		id12Pos.copyInto(i2);
+		
+		int lastPos=0;
+		int difference = i2.length - i1.length;
+	//	System.out.println("difference= "+difference);
+		//now copy them in the new order in ArrayRectangles
+		if(i1[0].intValue() < i2[0].intValue()){
+			//start from the first position where Changes have to be made
+			for(int o=0; o<i2.length; o++){
+				ArrayRectangles[i1[0].intValue()+o] = tempA[i2[o].intValue()];
+				lastPos = i1[0].intValue()+o;
+		//		System.out.println("Schleife1, lastPos= "+lastPos+"  o= "+o);
+			}
+			for(int o=lastPos+1; /**o<lastPos+1+difference**/o<i2[0].intValue()+difference; o++){
+				ArrayRectangles[o] = tempA[o-difference];
+				lastPos = o;
+			//	System.out.println("Schleife2, lastPos= "+lastPos);
+			}
+			for(int o=0; o<i1.length; o++){
+				ArrayRectangles[o+lastPos+1] = tempA[i1[o].intValue()];
+				//lastPos = i1[0].intValue()+o;
+			//	System.out.println("Schleife3, lastPos= "+(o+lastPos+1));
+			}
+		}
+		else{
+			//start from the first position where Changes have to be made
+			for(int o=0; o<i1.length; o++){
+				ArrayRectangles[i2[0].intValue()+o] = tempA[i1[o].intValue()];
+				lastPos = i2[0].intValue()+o;
+			//	System.out.println("Schleife1, lastPos= "+lastPos+"  o= "+o);
+			}
+			for(int o=lastPos+1; /**o<lastPos+1-difference**/o<i1[0].intValue()-difference; o++){
+				ArrayRectangles[o] = tempA[o+difference];
+				lastPos = o;
+			//	System.out.println("Schleife2, lastPos= "+lastPos);
+			}
+			for(int o=0; o<i2.length; o++){
+				ArrayRectangles[o+lastPos+1] = tempA[i2[o].intValue()];
+				//lastPos = i1[0].intValue()+o;
+			//	System.out.println("Schleife3, lastPos= "+(o+lastPos+1));
+			}
+		}
+	}
+	
+/////////////////////////////////////////////////////////////////////////////////////////	
+	
+/////////////////////////////////////////////////////////////////////////////////////////	
 /* (non-Javadoc)
  * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
  */
@@ -529,27 +639,49 @@ public void mouseExited(MouseEvent evt) {
  * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
  */
 public void mousePressed(MouseEvent evt) {
-	//System.out.println("MODIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII="+evt.getModifiers());
-	if(evt.getModifiers()==18){
-		ControlPressed=true;
+	if(evt.getModifiers() == 16 || evt.getModifiers() == 17 || evt.getModifiers() == 18){
+		if(evt.getModifiers()==18){
+			ControlPressed=true;
+		}
+		if(evt.getModifiers()==17){
+			ShiftPressed=true;
+		}	
+	
+		initXRubStart = evt.getX();
+		initYRubStart = evt.getY();
+		rubXStart = initXRubStart;
+		rubYStart = initYRubStart;
+		rubInit = true;
 	}
-	if(evt.getModifiers()==17){
-		ShiftPressed=true;
+	
+	// if right button is pressed change cursor and set colDragged flags for every rec of the col
+	if(evt.getModifiers() == 4){
+		this.setCursor(colDrag);
+		//String eidee=null;
+		
+		//get colName
+		for(int i=0; i<ArrayRectangles.length; i++){
+			if(ArrayRectangles[i].returnRect().contains(evt.getX(), evt.getY())) {
+				chosen =  ArrayRectangles[i].getIdentifier1();
+			}
+		}
+		//set the colDragged flags of all recs
+		for(int i=0; i<ArrayRectangles.length; i++){
+			if(ArrayRectangles[i].getIdentifier1().equals(chosen)) {
+				ArrayRectangles[i].colDragged = true;
+			}
+		}
 	}
-	initXRubStart = evt.getX();
-	initYRubStart = evt.getY();
-	rubXStart = initXRubStart;
-	rubYStart = initYRubStart;
-	rubInit = true;
 }
 
 /* (non-Javadoc)
  * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
  */
 public void mouseReleased(MouseEvent evt) {
+	if(evt.getModifiers() == 16 || evt.getModifiers() == 17 || evt.getModifiers() == 18){
 	if(rubRect!=null){
 		// reset all flags for new selection if neither Control nor Shift is pressed
-		if(!ControlPressed && !ShiftPressed){
+		if(evt.getModifiers()!=17 && evt.getModifiers()!=18){
 			for(int i=0; i<ArrayRectangles.length; i++){
 				ArrayRectangles[i].setFlag(false);
 			}
@@ -560,7 +692,7 @@ public void mouseReleased(MouseEvent evt) {
 			if(initXRubStart!=evt.getX() && initYRubStart!=evt.getY()){
 				if(ArrayRectangles[i].returnRect().intersects(rubRect)){
 					//if control is pressed invert the flag
-					if(ControlPressed){
+					if(evt.getModifiers()==18){
 						boolean boh = ArrayRectangles[i].getFlag();
 						ArrayRectangles[i].setFlag(!boh);
 					}
@@ -572,9 +704,8 @@ public void mouseReleased(MouseEvent evt) {
 			}
 			// if rubRect is null get the actual Mouse Position and check if one Rec conains this point
 			else{
-				//System.out.println(evt.getX()+ evt.getY());
 				if(ArrayRectangles[i].returnRect().contains(evt.getX(), evt.getY())){
-					if(ControlPressed){
+					if(evt.getModifiers()==18){
 						boolean boh = ArrayRectangles[i].getFlag();
 						ArrayRectangles[i].setFlag(!boh);
 					}
@@ -609,6 +740,26 @@ public void mouseReleased(MouseEvent evt) {
 		//this.repaint();
 		//this.updateUI();
 	}
+	}
+	if(evt.getModifiers() == 4){
+		boolean run = true;
+		int r=0;
+		while(run){
+			if(ArrayRectangles[r].returnRect().contains(evt.getX(), evt.getY()) && 
+			   !chosen.equals(ArrayRectangles[r].getIdentifier1())){
+				
+				changeColPos(ArrayRectangles[r].getIdentifier1(), chosen);
+				run=false;
+			}
+			else {
+				if(r==ArrayRectangles.length-1) run=false;
+				else r++;
+			}
+		}
+		for(int i=0; i<ArrayRectangles.length; i++){ArrayRectangles[i].colDragged=false;}
+	}
+	chosen=null;
+	this.setCursor(defaultCur);
 	//this.repaint();
 	//this.updateUI();
 }
@@ -639,7 +790,7 @@ public void mouseDragged(MouseEvent evt) {
 			rubYStart = initYRubStart;
 		}
 		//this.repaint();
-		//System.out.println("YESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYESYES");
+		//System.out.println(evt.getModifiers());
 		Graphics g = getGraphics();
 		//this.repaint();
 		//this.updateUI();
@@ -660,9 +811,40 @@ public void drawRubRec(Graphics g){
  * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
  */
 public void mouseMoved(MouseEvent evt) {
-	// TODO Auto-generated method stub
+	/**double xVelocity = Math.abs(evt.getX()-lastXMousePosition);
+	double yVelocity = Math.abs(evt.getY()-lastYMousePosition);
+	
+	if(xVelocity != 0 && yVelocity != 0)mouseVelocity = Math.sqrt(xVelocity * yVelocity);
+	if(xVelocity != 0 && yVelocity == 0)mouseVelocity = xVelocity;
+	if(xVelocity == 0 && yVelocity != 0)mouseVelocity = yVelocity;
+	if(xVelocity == 0 && yVelocity == 0)mouseVelocity = 0;
+	
+	lastXMousePosition = evt.getX();
+	lastYMousePosition = evt.getY();**/
+	
+	//System.out.println(mouseVelocity);
 	
 }
+
+//Tooltip
+
+public String getToolTipText(java.awt.event.MouseEvent evt) {
+	String s = null;
+	
+	int x = evt.getX();
+	int y = evt.getY();
+	
+	for(int i=0; i<ArrayRectangles.length; i++){
+		if(ArrayRectangles[i].returnRect().contains(x,y)){
+			s = ArrayRectangles[i].getIdentifier1()+" = "+ArrayRectangles[i].getID1count()+  " \n" +
+			  	ArrayRectangles[i].getIdentifier2()+" = "+ArrayRectangles[i].getID2count();
+			
+			/**s = " Number of Objects: " + getNumberOfEnclosedPoints()[0] + " \n" +
+			" Uniquely plotted objects:" + getNumberOfEnclosedPoints()[1] + " ";	**/
+		}
+	}
+	return s;
+}   
 
 
 }

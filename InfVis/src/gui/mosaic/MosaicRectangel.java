@@ -8,9 +8,10 @@ public class MosaicRectangel{
 	private Rectangle rect;
 	private String id1, id2;
 	private double width, height;
-	private int intWidth, intHeight, areaWidth, areaHeight, id1count, id2count;
+	private int intWidth, intHeight, areaWidth, areaHeight, id1count, id2count, totalId1Count, totalId2Count;
 	private boolean selected=false;
 	private Polygon Marker;
+	public boolean colDragged;
 	
 	public MosaicRectangel(double w, double h, String id1id2){
 		id1 = id1id2.substring(1, id1id2.lastIndexOf('&'));
@@ -46,6 +47,25 @@ public class MosaicRectangel{
 	
 	public int getID2count(){
 		return id2count;
+	}
+/////////////////////////////////////////////////////////////////////	
+	// save the total counts
+	// set in ProcessData in void buildRectangle
+	public void setTotalID1count(int cnt){
+		totalId1Count = cnt;
+	}
+	
+	public void setTotalId2count(int cnt){
+		totalId2Count = cnt;
+	}
+/////////////////////////////////////////////////////////////////////	
+	// return ID count
+	public int getTotalID1count(){
+		return totalId1Count;
+	}
+	
+	public int getTotalID2count(){
+		return totalId2Count;
 	}
 /////////////////////////////////////////////////////////////////////	
 	//specify coordinates of rectangle by defining x and y coordinates in left top corner of rectangle
