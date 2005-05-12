@@ -215,8 +215,6 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 	            //this.updateUI();
 	            mos.drawRubRec(mos.getGraphics());
 	        }
-	        mos.repaint();
-	        this.updateUI();
 	        
 	        Vector tmpv = new Vector();
 	        if (returnQuery() != null && sqlmd != null){
@@ -280,6 +278,9 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 	            
 	        }
 	    }
+	    
+	    mos.repaint();
+        this.updateUI();
 	}
 	
 	// returns actual Query
