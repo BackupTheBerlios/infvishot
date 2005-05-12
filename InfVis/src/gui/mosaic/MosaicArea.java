@@ -746,6 +746,7 @@ public void mouseReleased(MouseEvent evt) {
 		int r=0;
 		while(run){
 			if(ArrayRectangles[r].returnRect().contains(evt.getX(), evt.getY()) && 
+			   ArrayRectangles[r].getIdentifier1()!=null && chosen!=null &&
 			   !chosen.equals(ArrayRectangles[r].getIdentifier1())){
 				
 				changeColPos(ArrayRectangles[r].getIdentifier1(), chosen);

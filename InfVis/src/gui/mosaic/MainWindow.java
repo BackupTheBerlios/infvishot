@@ -194,88 +194,92 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 	 * @see java.awt.event.MouseListener#mousePressed
 (java.awt.event.MouseEvent)
 	 */
-	public void mousePressed(MouseEvent arg0) {
+	public void mousePressed(MouseEvent evt) {
 		// TODO Auto-generated method stub
-		
+	    if(evt.getModifiers() == 4){
+			mos.repaint();
+			this.updateUI();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseListener#mouseReleased
 (java.awt.event.MouseEvent)
 	 */
-	public void mouseReleased(MouseEvent arg0) {
-		//Query = mos.getQuery();
-		if(mos.Query != null){
-		mos.Query[0][0] = names[0];
-		mos.Query[1][0] = names[1];
-		//this.updateUI();
-		mos.drawRubRec(mos.getGraphics());
-		}
-		mos.repaint();
-		this.updateUI();
-		
-		Vector tmpv = new Vector();
-		if (returnQuery() != null && sqlmd != null){
-		    for (int i=0; i<returnQuery().length; i++){
-		        if (returnQuery()[i] == null)
-		            continue;
-		        StringBuffer sb1 = new StringBuffer();
-		        
-		        for (int j=1; j<returnQuery()[i].length; j++){
-		            if (returnQuery()[i][j] == null)
-		                continue;
-		        //    System.out.println(returnQuery()[i][j] + "i:" + i + " j: " + j + " " + returnQuery()[i].length);
-		            
-		            String tmp_s = "";
-		            if (j < returnQuery()[i].length) {
-		                tmp_s = " OR ";
-		            }
-		            sb1.append(returnQuery()[i][0] + "='" + returnQuery()[i][j] + "' " +  tmp_s);
-		        }
-		        
-		       // System.out.println("(" + sb1.toString() + " 1=2)");
-		        
-		        tmpv.addElement("(" + sb1.toString() + " 1=2)");
-		    }
-		}
-		
-		if (tmpv.size() > 0) {
-		    StringBuffer sb = new StringBuffer();
-		    
-		    for (int i=0; i<tmpv.size(); i++){
-		        sb.append(tmpv.elementAt(i) + " AND ");
-		    }
-		    
-		    String o_query = "(" +  sb.toString() + " 1=1)";
-		    
-		    //System.out.println(o_query);
-		    
-		    sqlmd.loadData(o_query);
-		    
-		    TimeMeasureObject tmo1 = new TimeMeasureObject();
-		    tmo1.start();
-		    SQLScatterDataListManager tmpssdlm = new SQLScatterDataListManager(sqlmd.getSysCore(),sqlmd.getSysCore().getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),sqlmd.getSysCore().getMainFrm().iscatterfrm.jComboBoxXAxis.getSelectedItem().toString(),sqlmd.getSysCore().getMainFrm().iscatterfrm.jComboBoxYAxis.getSelectedItem().toString(),sqlmd.getSysCore().getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString(),sqlmd.getSysCore().getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString(),false);
-		    sqlmd.getSysCore().getMainFrm().iscatterfrm.jScatterplotPanel.setSQLSPManager(tmpssdlm);
-		    sqlmd.getSysCore().getMainFrm().iscatterfrm.jScatterplotPanel.getScatterArea().checkEnclosedPoints(sqlmd.getDoubleDataArray());
-		   // sqlmd.getSysCore().getMainFrm().iscatterfrm.jScatterplotPanel.updateUI();
-		    tmo1.stop();
-		    
-		    int tmp_ll = 0;
-		    try {
-		        if (sqlmd.getDoubleDataArray()[0] == null) {
-		            tmp_ll = 0;
-		        }
-		        else {
-		            tmp_ll = sqlmd.getDoubleDataArray()[0].length;
-		        }
-		    }
-		    catch (Exception exc){
-		        
-		    }
-		    sqlmd.getSysCore().getMainFrm().iperformancefrm.addTimeRow(1,sqlmd.getTime().getTimeDiff(),tmo1.getTimeDiff(),0,"PaintScatter",tmp_ll);
-		    
-		    
-		}
+	public void mouseReleased(MouseEvent evt) {
+	    if(evt.getModifiers() == 16 || evt.getModifiers() == 17 || evt.getModifiers() == 18){
+	        //Query = mos.getQuery();
+	        if(mos.Query != null){
+	            mos.Query[0][0] = names[0];
+	            mos.Query[1][0] = names[1];
+	            //this.updateUI();
+	            mos.drawRubRec(mos.getGraphics());
+	        }
+	        mos.repaint();
+	        this.updateUI();
+	        
+	        Vector tmpv = new Vector();
+	        if (returnQuery() != null && sqlmd != null){
+	            for (int i=0; i<returnQuery().length; i++){
+	                if (returnQuery()[i] == null)
+	                    continue;
+	                StringBuffer sb1 = new StringBuffer();
+	                
+	                for (int j=1; j<returnQuery()[i].length; j++){
+	                    if (returnQuery()[i][j] == null)
+	                        continue;
+	                    //    System.out.println(returnQuery()[i][j] + "i:" + i + " j: " + j + " " + returnQuery()[i].length);
+	                    
+	                    String tmp_s = "";
+	                    if (j < returnQuery()[i].length) {
+	                        tmp_s = " OR ";
+	                    }
+	                    sb1.append(returnQuery()[i][0] + "='" + returnQuery()[i][j] + "' " +  tmp_s);
+	                }
+	                
+	                // System.out.println("(" + sb1.toString() + " 1=2)");
+	                
+	                tmpv.addElement("(" + sb1.toString() + " 1=2)");
+	            }
+	        }
+	        
+	        if (tmpv.size() > 0) {
+	            StringBuffer sb = new StringBuffer();
+	            
+	            for (int i=0; i<tmpv.size(); i++){
+	                sb.append(tmpv.elementAt(i) + " AND ");
+	            }
+	            
+	            String o_query = "(" +  sb.toString() + " 1=1)";
+	            
+	            //System.out.println(o_query);
+	            
+	            sqlmd.loadData(o_query);
+	            
+	            TimeMeasureObject tmo1 = new TimeMeasureObject();
+	            tmo1.start();
+	            SQLScatterDataListManager tmpssdlm = new SQLScatterDataListManager(sqlmd.getSysCore(),sqlmd.getSysCore().getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),sqlmd.getSysCore().getMainFrm().iscatterfrm.jComboBoxXAxis.getSelectedItem().toString(),sqlmd.getSysCore().getMainFrm().iscatterfrm.jComboBoxYAxis.getSelectedItem().toString(),sqlmd.getSysCore().getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString(),sqlmd.getSysCore().getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString(),false);
+	            sqlmd.getSysCore().getMainFrm().iscatterfrm.jScatterplotPanel.setSQLSPManager(tmpssdlm);
+	            sqlmd.getSysCore().getMainFrm().iscatterfrm.jScatterplotPanel.getScatterArea().checkEnclosedPoints(sqlmd.getDoubleDataArray());
+	            // sqlmd.getSysCore().getMainFrm().iscatterfrm.jScatterplotPanel.updateUI();
+	            tmo1.stop();
+	            
+	            int tmp_ll = 0;
+	            try {
+	                if (sqlmd.getDoubleDataArray()[0] == null) {
+	                    tmp_ll = 0;
+	                }
+	                else {
+	                    tmp_ll = sqlmd.getDoubleDataArray()[0].length;
+	                }
+	            }
+	            catch (Exception exc){
+	                
+	            }
+	            sqlmd.getSysCore().getMainFrm().iperformancefrm.addTimeRow(1,sqlmd.getTime().getTimeDiff(),tmo1.getTimeDiff(),0,"PaintScatter",tmp_ll);
+	            
+	        }
+	    }
 	}
 	
 	// returns actual Query
@@ -286,10 +290,12 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 	 * @see java.awt.event.MouseMotionListener#mouseDragged
 (java.awt.event.MouseEvent)
 	 */
-	public void mouseDragged(MouseEvent arg0) {
-		mos.drawRubRec(mos.getGraphics());
-		mos.repaint();
-		this.updateUI();
+	public void mouseDragged(MouseEvent evt) {
+	    if(evt.getModifiers() == 16 || evt.getModifiers() == 17 || evt.getModifiers() == 18){
+			mos.drawRubRec(mos.getGraphics());
+			mos.repaint();
+			this.updateUI();
+		}
 	}
 	/* (non-Javadoc)
 	 * @see java.awt.event.MouseMotionListener#mouseMoved
