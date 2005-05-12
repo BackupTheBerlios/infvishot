@@ -18,6 +18,7 @@ import sys.helpers.*;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -257,7 +258,13 @@ public class JCSVImportFrm extends JDialog {
 			jButton2.setSize(107, 17);
 			jButton2.setText("Importieren!");
 			jButton2.addActionListener(new java.awt.event.ActionListener() { 
-				public void actionPerformed(java.awt.event.ActionEvent e) {    
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+				    
+				    if (jTextField.getText().trim().equals("")){
+				        JOptionPane.showMessageDialog(null,"Geben Sie einen Tabellennamen ein!", "Fehler", JOptionPane.ERROR_MESSAGE );
+				        return;
+				    }
+				    
 					//Create tables
 					if (!jCheckBox.isSelected()){
 					    //DIRTY VERSION !!!
@@ -350,6 +357,8 @@ public class JCSVImportFrm extends JDialog {
 				        }
 				        
 				        reader.close();
+				        
+				        JOptionPane.showMessageDialog(null,"Daten erfolgreich importiert!", "Erfolg", JOptionPane.INFORMATION_MESSAGE);
 			        }
 			        catch (Exception exc){
 			            new InfVisException("Fehler","Fehler beim Erstellen der Tabelle!",false).showDialogMessage();
