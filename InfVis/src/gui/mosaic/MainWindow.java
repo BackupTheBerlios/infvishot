@@ -221,7 +221,7 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 		        //    System.out.println(returnQuery()[i][j] + "i:" + i + " j: " + j + " " + returnQuery()[i].length);
 		            
 		            String tmp_s = "";
-		            if (j < returnQuery()[i].length - 1) {
+		            if (j < returnQuery()[i].length) {
 		                tmp_s = " OR ";
 		            }
 		            sb1.append(returnQuery()[i][0] + "='" + returnQuery()[i][j] + "' " +  tmp_s);
@@ -241,6 +241,8 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 		    }
 		    
 		    String o_query = "(" +  sb.toString() + " 1=1)";
+		    
+		    //System.out.println(o_query);
 		    
 		    sqlmd.loadData(o_query);
 		    
