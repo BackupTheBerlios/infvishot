@@ -8,6 +8,7 @@ package gui.scatterplot;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 
 import sys.helpers.TimeMeasureObject;
@@ -20,10 +21,10 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	protected double minX,maxX,minY,maxY;
 	protected int[] margins;
 	protected Color pointColor;
-	protected int rubStartX,rubStartY,rubLastX,rubLastY;
+	protected int rubStartX,rubStartY,rubLastX,rubLastY,rubDiffX,rubDiffY;
 	protected static double mx,bx,my,by;
 	protected boolean mesh, box, tooltips;
-	protected boolean rubInit, rubEnd, objectsEnclosed, holdSelected;
+	protected boolean rubInit, rubEnd, objectsEnclosed, holdSelected, transientActive;
 	protected boolean hasValues;
 	protected int[][] objects;
 	protected int objW, objH;
@@ -360,6 +361,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		rubEnd = false;
 		holdSelected = false;
 		objectsEnclosed = false;
+		transientActive = false;
 		
 		// nur maustaste, ohne tastatur!
 		if (modifier == 16 || modifier == 18){
@@ -385,24 +387,42 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 				holdSelected = true; // Beim zurücksetzen wird diese Variable vorher abgefragt
 			}
 		}
+		
+		if (modifier == 24){
+			Graphics g = getGraphics();
+			g.setXORMode(Color.green.darker());
+			drawRubRectangle(g,x,y,x+(Math.abs(rubLastX-rubStartX)),y+(Math.abs(rubStartY-rubLastY)));
+			rubDiffX = (Math.abs(rubLastX-rubStartX));
+			rubDiffY = (Math.abs(rubStartY-rubLastY));
+			transientActive = true;
+			rubInit = true;
+		}
 	}
 	
 	public void mouseDragged(MouseEvent evt) {
 	    int x = evt.getX();
 	    int y = evt.getY();
-	      
-	    if (rubInit){
-	      	Graphics g = getGraphics();
-	      	g.setXORMode(Color.cyan.darker());
-	      	
-	      	// x < width-right+8 && x > xOrigin+left && y < yOrigin+bottom && y > top-8
-	      	
-	      	drawRubRectangle(g,rubStartX, rubStartY, rubLastX, rubLastY);
+
+      	Graphics g = getGraphics();
+      	g.setXORMode(Color.cyan.darker());
+	    
+	    if (rubInit && (!transientActive)){
+
+	    	drawRubRectangle(g,rubStartX, rubStartY, rubLastX, rubLastY);
 	      	drawRubRectangle(g,rubStartX, rubStartY, x, y);
 
 	      	rubLastX = x;
 	      	rubLastY = y;
 	    }
+	    
+	    else if (rubInit && transientActive){
+	    	g.setXORMode(Color.green.darker());
+	    	int xL = x, yL = y;
+	    	//drawRubRectangle(g,xL, yL, xL+rubDiffX, yL+rubDiffY);
+	    	drawRubRectangle(g,x, y, x+rubDiffX, y+rubDiffY);
+	    	System.out.println("dragged");
+	    }
+	    
 	}
 	
 	private void drawRubRectangle(Graphics g, int startX, int startY, int stopX, int stopY ) {
@@ -417,7 +437,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	  	y = Math.min(startY, stopY);
 	  	w = Math.abs(startX - stopX);
 	  	h = Math.abs(startY - stopY);
-	  	  
+
 	  	if ((x+w) >= (width-right+8)) w = w-(x+w-(width-right+7));
 	  	if (x <= (xOrigin+left)) { x = xOrigin+left+1; w = Math.abs(x - Math.max(startX,stopX)); }
 	  	if ((y+h) >= (yOrigin+bottom)) h = h-(y+h-(yOrigin+bottom))-1;
@@ -425,7 +445,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	  	g.drawRect(x, y, w, h);
 	}
 
-	public void mouseReleased(MouseEvent arg0) {
+	public void mouseReleased(MouseEvent e) {
 		// System.out.println("Rect: " + rubStartX + "/" + rubStartY + " and " + rubLastX + "/" + rubLastY);
 		if (rubInit) { rubEnd = true; checkEnclosedPoints(); }
 	}
@@ -479,11 +499,11 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		    for (int i=tempMinX; i<tempMaxX; i++){
 		        for (int k=tempMinY; k<tempMaxY; k++){
 		            
-		            int arrayX = Math.max(0,convertX(i));
-		            arrayX = Math.min(width-1,convertX(i));
+		            int arrayX /*= Math.max(0,convertX(i));
+		            arrayX*/ = Math.min(width-1,Math.max(0,convertX(i))/*convertX(i)*/);
 		            
-		            int arrayY = Math.max(0,convertY(k));
-		            arrayY = Math.min(height-1,convertY(k));
+		            int arrayY /*= Math.max(0,convertY(k));
+		            arrayY*/ = Math.min(height-1,Math.max(0,convertY(k))/*convertY(k)*/);
 		            
 		            if (objects[arrayX][arrayY] > 0){
 		                objects[arrayX][arrayY]=(-1)*objects[arrayX][arrayY];
@@ -551,9 +571,8 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		// TODO Auto-generated method stub
 	}
 
-	public void mouseMoved(MouseEvent evt) {
+	public void mouseMoved(MouseEvent e) {
 		return;
 		// TODO Auto-generated method stub
 	}
-	
 }
