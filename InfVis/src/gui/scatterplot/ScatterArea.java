@@ -23,7 +23,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	protected int rubStartX,rubStartY,rubLastX,rubLastY;
 	protected static double mx,bx,my,by;
 	protected boolean mesh, box, tooltips;
-	protected boolean rubInit, rubEnd, objectsEnclosed;
+	protected boolean rubInit, rubEnd, objectsEnclosed, holdSelected;
 	protected boolean hasValues;
 	protected int[][] objects;
 	protected int objW, objH;
@@ -345,25 +345,24 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		int y        = evt.getY();
 		int modifier = evt.getModifiers();
 		
-		// Reset Objects:
-		for (int i=0; i<width; i++){
-			for (int k=0; k<height; k++){
-				if (objects[i][k] < 0) objects[i][k]*=(-1);
+		if (!(modifier == 18)){
+			// Reset Objects:
+			for (int i=0; i<width; i++){
+				for (int k=0; k<height; k++){
+					if (objects[i][k] < 0) objects[i][k]*=(-1);
+				}
 			}
 		}
 		
 		System.out.println(x+"/"+y + " with modifier: " + modifier);
 		
+		rubInit = false;
 		rubEnd = false;
+		holdSelected = false;
 		objectsEnclosed = false;
 		
-		// STRG wurde gedrückt & die maus
-		if (modifier == 18){
-			System.out.println("STRG");
-		}
-		
 		// nur maustaste, ohne tastatur!
-		if (modifier == 16){
+		if (modifier == 16 || modifier == 18){
 		
 			int yOrigin=height,
     			xOrigin=0,
@@ -380,6 +379,10 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 				rubStartY = y;
 				rubLastX = x;
 				rubLastY = y;
+			}
+			
+			if (modifier == 18) {
+				holdSelected = true; // Beim zurücksetzen wird diese Variable vorher abgefragt
 			}
 		}
 	}
@@ -432,10 +435,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 									", maxX: " + convRevX(Math.max(rubStartX,rubLastX)) + 
 									", minY: " + convRevY(Math.max(rubStartY,rubLastY)) + 
 									", maxY: " + convRevY(Math.min(rubStartY,rubLastY)));
-		
-		
-		// UNNÖTIGES (?!?) hin und her konvertieren ==> bei vielen Daten sehr langsam!
-		
+
 		int tempMinX = convRevX(Math.min(rubStartX,rubLastX));
 	    int tempMaxX = convRevX(Math.max(rubStartX,rubLastX));
 	    int tempMinY = convRevY(Math.max(rubStartY,rubLastY));
@@ -443,7 +443,6 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	    
 	    
 		if (sqlspmanager != null) {
-		    //HARALD: wahrscheinlich wieder entfernen
 		    sqlspmanager.setBounds(tempMinX,tempMinY,tempMaxX,tempMaxY);
 		    sqlspmanager.loadData();
 		    
@@ -497,12 +496,13 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	}
 	
 	public void checkEnclosedPoints(double[][] _data){
+		
 	    for (int i=0; i<width; i++){
 			for (int k=0; k<height; k++){
 				if (objects[i][k] < 0) objects[i][k]*=(-1);
 			}
 		}
-	    
+
 	    objectsEnclosed = false;
 	    
 	    for (int i=0; i<_data.length; i++){
@@ -523,8 +523,8 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	
 	public int[] getNumberOfEnclosedPoints(){
 		int[] numb = new int[2];
-		numb[0]=0;
-		numb[1]=0;
+		numb[0]=0;  // enclosed points
+		numb[1]=0;  // enclosed points that are plotted at different positions
 		
 		for (int i = 0; i < width; i++) {
 			for (int k = 0; k < height; k++){
@@ -552,24 +552,8 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	}
 
 	public void mouseMoved(MouseEvent evt) {
-		
-		/*if (rubInit && rubEnd && tooltips && objectsEnclosed){
-			
-			int x = evt.getX();
-			int y = evt.getY();
-			int[] ep = getNumberOfEnclosedPoints();
-			
-			if ((new Rectangle(Math.min(rubStartX,rubLastX),
-							   Math.min(rubStartY,rubLastY),
-							   Math.abs(rubLastX-rubStartX),
-							   Math.abs(rubLastY-rubStartY)).contains(x,y))){
-					//stt.setLocation(x+80,y+80);
-					//stt.addLine("Number of Objects: " + ep[0]);
-					//stt.addLine("Uniquely plotted Objects" + ep[1]);
-					//stt.show(true);
-			}
-			//else stt.show(false);
-		}*/
+		return;
+		// TODO Auto-generated method stub
 	}
 	
 }
