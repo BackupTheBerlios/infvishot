@@ -25,6 +25,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	protected static double mx,bx,my,by;
 	protected boolean mesh, box, tooltips;
 	protected boolean rubInit, rubEnd, objectsEnclosed, holdSelected, transientActive;
+	protected boolean useTransientMode;
 	protected boolean hasValues;
 	protected int[][] objects;
 	protected int objW, objH;
@@ -58,7 +59,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	    margins[2] = 20;
 	    margins[3] = 30;
 	    
-	    
+	    useTransientMode = false;
 	    hasValues = false;
 	    
 	    System.out.println("Breite: " + objW + " / Höhe: " + objH);
@@ -146,6 +147,12 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	    
 	    // draw Points
 	    drawObjects(g);
+	    
+	    // TODO: Das richtig machen!
+	    /*if (useTransientMode){
+	    	g.setColor(Color.cyan.darker());
+	    	drawRubRectangle(g, rubStartX, rubStartY, rubLastX, rubLastY);
+	    }*/
 	}
 
 	public String getToolTipText(java.awt.event.MouseEvent evt) {
@@ -228,9 +235,9 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 
 		// calculate Parameters
 		mx=(width-right-left)/(maxX-minX);
-	    bx=left-mx*minX;
+	    bx=left-mx*minX+2;
 	    my=(yOrigin+bottom-top)/(minY-maxY);
-	    by=yOrigin+bottom-my*minY;
+	    by=yOrigin+bottom-my*minY-2;
 	}
 	
 	public void drawObjects(Graphics g){
@@ -447,7 +454,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 
 	public void mouseReleased(MouseEvent e) {
 		// System.out.println("Rect: " + rubStartX + "/" + rubStartY + " and " + rubLastX + "/" + rubLastY);
-		if (rubInit) { rubEnd = true; checkEnclosedPoints(); }
+		if (rubInit) { rubEnd = true; checkEnclosedPoints(); /*setTransient();*/ }
 	}
 	
 	public void checkEnclosedPoints(){
@@ -575,4 +582,20 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		return;
 		// TODO Auto-generated method stub
 	}
+	
+	/*public void setTransient(){
+		useTransientMode = true;
+		System.out.println("Transient!");
+	}*/
+	
+	// TRANSIENT IDEEN
+	/*
+	 * ==> Harald muss key-Event ('t' an mich übergeben), d.h. Methode setTransient() aufrufen
+	 * ==> in setTransient() rect gemalt, falls Mausklick hinein boolean gesetzt
+	 * - bei Harry Timer (3 sec), wenn dann bool noch false ==> unsetTransient() (rect entfernen)
+	 * - draggen: Maus-Aussehen Drag (Oli), Rechteck draggen
+	 * - bei maus-release: ganz normal!
+	 * 
+	 * 
+	 */
 }
