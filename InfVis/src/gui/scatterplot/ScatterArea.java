@@ -571,6 +571,10 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 
 	    objectsEnclosed = false;
 	    
+	    if (_data == null){
+	        return;
+	    }
+	    
 	    for (int i=0; i<_data.length; i++){
 	        int arrayX = Math.max(0,convertX(_data[i][0]));
 	        arrayX = Math.min(width-1,convertX(_data[i][0]));
