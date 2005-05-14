@@ -26,6 +26,7 @@ import org.jfree.chart.renderer.StackedBarRenderer;
 import org.jfree.data.*;
 
 import javax.swing.JCheckBox;
+import javax.swing.JTable;
 public class InternalPerformanceFrm extends JInternalFrame {
     private static SysCore sysCore = null;
     private JMenuItem jMenuItem = null;    
@@ -43,6 +44,13 @@ public class InternalPerformanceFrm extends JInternalFrame {
 	private JButton jButton = null;
 	private JButton jButton1 = null;
 	private JCheckBox jCheckBox = null;
+	public SimpleListTable jTable1 = null;
+	private JScrollPane jScrollPane1 = null;
+	private JButton jButton2 = null;
+	private JButton jButton3 = null;
+	public boolean macroRunning = false;
+	private MacroThread mh = null;
+	private Thread tmh = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -75,6 +83,28 @@ public class InternalPerformanceFrm extends JInternalFrame {
 		sysCore.getMainFrm().jMenu1.add(jMenuItem);
 	}
 	
+	public void threadMeth(){
+	    if (macroRunning) {
+		    
+	        try {
+	            mh.stop();
+	            tmh.stop();
+	        }
+	        catch (Exception exc){
+	            System.out.println(exc.getMessage());
+	        }
+	        macroRunning = false;
+		    jButton2.setText("Start");
+		}
+		else {
+		    macroRunning = true;
+		    mh = new MacroThread(this,sysCore);
+		    tmh = new Thread(mh);
+		    
+		    jButton2.setText("Stopp");
+		}
+	}
+		
 	public void addTimeRow(int id, long _timedb, long _timesp, long _timemv, String _typ, int _datacount){
 	    Object[] ox = new Object[6];
 	    ox[0] = new Integer(id);
@@ -256,6 +286,9 @@ public class InternalPerformanceFrm extends JInternalFrame {
 			jPanel4.setPreferredSize(new java.awt.Dimension(200,400));
 			jPanel4.add(getJButton1(), null);
 			jPanel4.add(getJCheckBox(), null);
+			jPanel4.add(getJScrollPane1(), null);
+			jPanel4.add(getJButton3(), null);
+			jPanel4.add(getJButton2(), null);
 		}
 		return jPanel4;
 	}
@@ -371,4 +404,65 @@ public class InternalPerformanceFrm extends JInternalFrame {
 		}
 		return jCheckBox;
 	}
-             }  //  @jve:decl-index=0:visual-constraint="10,30"
+	/**
+	 * This method initializes jTable1	
+	 * 	
+	 * @return javax.swing.JTable	
+	 */    
+	private SimpleListTable getJTable1() {
+		if (jTable1 == null) {
+			jTable1 = new SimpleListTable();
+		}
+		return jTable1;
+	}
+	/**
+	 * This method initializes jScrollPane1	
+	 * 	
+	 * @return javax.swing.JScrollPane	
+	 */    
+	private JScrollPane getJScrollPane1() {
+		if (jScrollPane1 == null) {
+			jScrollPane1 = new JScrollPane();
+			jScrollPane1.setViewportView(getJTable1());
+			jScrollPane1.setPreferredSize(new java.awt.Dimension(200,200));
+		}
+		return jScrollPane1;
+	}
+	/**
+	 * This method initializes jButton2	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */    
+	private JButton getJButton2() {
+		if (jButton2 == null) {
+			jButton2 = new JButton();
+			jButton2.setToolTipText("");
+			jButton2.setText("Start");
+			jButton2.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {    
+					threadMeth();
+				}
+			});
+		}
+		return jButton2;
+	}
+	/**
+	 * This method initializes jButton3	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */    
+	private JButton getJButton3() {
+		if (jButton3 == null) {
+			jButton3 = new JButton();
+			jButton3.setText("Add");
+			jButton3.addActionListener(new java.awt.event.ActionListener() { 
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+				    Integer[] _int = new Integer[1];
+				    _int[0] = new Integer(0);
+					jTable1.addRow(_int);
+				}
+			});
+		}
+		return jButton3;
+	}
+                 }  //  @jve:decl-index=0:visual-constraint="10,30"
