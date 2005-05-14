@@ -82,7 +82,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	private void initialize() {
         this.addComponentListener(new java.awt.event.ComponentAdapter() { 
         	public void componentResized(java.awt.event.ComponentEvent e) {    
-        		System.out.println("componentResized()"); // TODO Auto-generated Event stub componentResized()
+        		System.out.println("componentResized()");
         	}
         });
 			
@@ -590,36 +590,16 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	
     public void mouseEntered(MouseEvent e) {
     	return;
-    	// TODO Auto-generated method stub
-	}
+ 	}
 
 	public void mouseExited(MouseEvent e) {
 		return;
-		// TODO Auto-generated method stub
 	}
 	public void mouseClicked(MouseEvent e) {
 		return;
-		// TODO Auto-generated method stub
 	}
 
 	public void mouseMoved(MouseEvent e) {
 		return;
-		// TODO Auto-generated method stub
 	}
-	
-	/*public void setTransient(){
-		useTransientMode = true;
-		System.out.println("Transient!");
-	}*/
-	
-	// TRANSIENT IDEEN
-	/*
-	 * ==> Harald muss key-Event ('t' an mich übergeben), d.h. Methode setTransient() aufrufen
-	 * ==> in setTransient() rect gemalt, falls Mausklick hinein boolean gesetzt
-	 * - bei Harry Timer (3 sec), wenn dann bool noch false ==> unsetTransient() (rect entfernen)
-	 * - draggen: Maus-Aussehen Drag (Oli), Rechteck draggen
-	 * - bei maus-release: ganz normal!
-	 * 
-	 * 
-	 */
 }
