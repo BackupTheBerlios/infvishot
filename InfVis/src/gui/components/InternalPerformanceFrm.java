@@ -402,6 +402,7 @@ public class InternalPerformanceFrm extends JInternalFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {    
 					jTable.removeAll();
 					drawChart();
+					scatterBounds = null;
 				}
 			});
 		}
