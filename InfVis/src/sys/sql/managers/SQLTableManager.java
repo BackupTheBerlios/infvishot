@@ -59,4 +59,29 @@ public class SQLTableManager implements java.io.Serializable {
 	    return (String) entries.elementAt(_pos);
 	}
 	
+	public void dropTable(String _destTable){
+	    try {
+	        //Delete
+            sysCore.getDB().sendStatement(new SQLTableList(sysCore.getDBProps().getDBType()).dropTable(_destTable));
+	    }
+	    catch (Exception exc){
+	        System.out.println(exc.getMessage());
+	    }
+	}
+	
+	public boolean createTmpTable(int _cnt, String _x, String _y, String _x1, String _y1, String _srcTable, String _destTable){
+	    dropTable(_destTable);
+	    
+	    try {
+	        //Delete
+            sysCore.getDB().sendStatement(new SQLTableList(sysCore.getDBProps().getDBType()).createTempTable(_destTable,_x,_y,_x1,_y1,_srcTable,_cnt));
+	    }
+	    catch (Exception exc){
+	        System.out.println(exc.getMessage());
+	        return false;
+	    }
+	    
+	    return true;
+	}
+	
 }

@@ -277,7 +277,7 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 	            sqlmd.getSysCore().getMainFrm().iperformancefrm.addTimeRow(1,sqlmd.getTime().getTimeDiff(),tmo1.getTimeDiff(),0,"PaintScatter",tmp_ll);
 	            
 	            sqlmd.getSysCore().getMainFrm().iperformancefrm.mosaicSelection = o_query;
-	            sqlmd.getSysCore().getMainFrm().iperformancefrm.scatterBounds = null;
+	            //sqlmd.getSysCore().getMainFrm().iperformancefrm.scatterBounds = null;
 	        }
 	    }
 	    

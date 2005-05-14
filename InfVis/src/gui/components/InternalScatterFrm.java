@@ -68,11 +68,11 @@ public class InternalScatterFrm extends JInternalFrame {
 		sysCore.getMainFrm().jMenu1.add(jMenuItem);
 	}
 	
-	public void repaintPlot(){
+	public void repaintPlot(String _table){
 	    if (sysCore.isDebug())
 	        System.out.println("Start fetching data...");
 	    
-	    SQLScatterDataListManager sscdlm = new SQLScatterDataListManager(sysCore,sysCore.getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),jComboBoxXAxis.getSelectedItem().toString(), jComboBoxYAxis.getSelectedItem().toString(),sysCore.getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString(),sysCore.getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString(),true);
+	    SQLScatterDataListManager sscdlm = new SQLScatterDataListManager(sysCore,_table,jComboBoxXAxis.getSelectedItem().toString(), jComboBoxYAxis.getSelectedItem().toString(),sysCore.getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString(),sysCore.getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString(),true);
 	    
 	    if (sysCore.isDebug())
 	        System.out.println("End fetching data...");
@@ -95,13 +95,17 @@ public class InternalScatterFrm extends JInternalFrame {
 	    names[0] = sysCore.getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString();
 		names[1] = sysCore.getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString();
 		
-		sysCore.getMainFrm().imosaicfrm.mainWindow.setSQLManager(new SQLMosaicDataListManager(sysCore,sysCore.getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),sysCore.getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString(), sysCore.getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString(),sysCore.getMainFrm().iscatterfrm.jComboBoxXAxis.getSelectedItem().toString(),sysCore.getMainFrm().iscatterfrm.jComboBoxYAxis.getSelectedItem().toString(),false));
+		sysCore.getMainFrm().imosaicfrm.mainWindow.setSQLManager(new SQLMosaicDataListManager(sysCore,_table,sysCore.getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString(), sysCore.getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString(),sysCore.getMainFrm().iscatterfrm.jComboBoxXAxis.getSelectedItem().toString(),sysCore.getMainFrm().iscatterfrm.jComboBoxYAxis.getSelectedItem().toString(),false));
 	    sysCore.getMainFrm().imosaicfrm.mainWindow.setData(sscdlm.getStringDataArray(),names);
 	    sysCore.getMainFrm().imosaicfrm.mainWindow.Markers(sysCore.getMainFrm().imosaicfrm.jCheckBox.isSelected());
 	    
 	    tmo1.stop();
 	    
 	    sysCore.getMainFrm().iperformancefrm.addTimeRow(1,sscdlm.getTime().getTimeDiff(),tmo.getTimeDiff(),tmo1.getTimeDiff(),"PaintScatter",sscdlm.getDataArray().length);
+	}
+	
+	public void repaintPlot(){
+	    repaintPlot(sysCore.getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString());
 	}
 	
 	/**

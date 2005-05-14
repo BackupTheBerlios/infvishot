@@ -481,20 +481,12 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		}
 	}
 	
-	public void checkEnclosedPoints(){
-		System.out.println("Rectangle: minX: " + convRevX(Math.min(rubStartX,rubLastX)) + 
-									", maxX: " + convRevX(Math.max(rubStartX,rubLastX)) + 
-									", minY: " + convRevY(Math.max(rubStartY,rubLastY)) + 
-									", maxY: " + convRevY(Math.min(rubStartY,rubLastY)));
-
-		int tempMinX = convRevX(Math.min(rubStartX,rubLastX));
-	    int tempMaxX = convRevX(Math.max(rubStartX,rubLastX));
-	    int tempMinY = convRevY(Math.max(rubStartY,rubLastY));
-	    int tempMaxY = convRevY(Math.min(rubStartY,rubLastY));
-	    
-	    
-		if (sqlspmanager != null) {
-		    sqlspmanager.setBounds(tempMinX,tempMinY,tempMaxX,tempMaxY);
+	
+	public void checkEnclosedPoints(int[] _points){
+	    if (sqlspmanager != null) {
+		    int[] tmpbnd = new int[4];
+		    
+		    sqlspmanager.setBounds(_points[0],_points[1],_points[2],_points[3]);
 		    sqlspmanager.loadData();
 		    
 		    TimeMeasureObject tmo = new TimeMeasureObject();
@@ -518,7 +510,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		    //Mosaic
 		    TimeMeasureObject tmo1 = new TimeMeasureObject();
 		    tmo1.start();
-		    sqlspmanager.getSysCore().getMainFrm().imosaicfrm.fillMosaic(tempMinX,tempMinY,tempMaxX,tempMaxY,sqlspmanager.getStringDataArray());
+		    sqlspmanager.getSysCore().getMainFrm().imosaicfrm.fillMosaic(_points[0],_points[1],_points[2],_points[3],sqlspmanager.getStringDataArray());
 		    sqlspmanager.getSysCore().getMainFrm().imosaicfrm.mainWindow.setSQLManager(new SQLMosaicDataListManager(sqlspmanager.getSysCore(),sqlspmanager.getSysCore().getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),sqlspmanager.getSysCore().getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString(), sqlspmanager.getSysCore().getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString(),sqlspmanager.getSysCore().getMainFrm().iscatterfrm.jComboBoxXAxis.getSelectedItem().toString(),sqlspmanager.getSysCore().getMainFrm().iscatterfrm.jComboBoxYAxis.getSelectedItem().toString(),false));
 		    tmo1.stop();
 		    
@@ -527,8 +519,8 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		else {
 		    	    
 		    
-		    for (int i=tempMinX; i<tempMaxX; i++){
-		        for (int k=tempMinY; k<tempMaxY; k++){
+		    for (int i=_points[0]; i<_points[2]; i++){
+		        for (int k=_points[1]; k<_points[3]; k++){
 		            
 		            int arrayX /*= Math.max(0,convertX(i));
 		            arrayX*/ = Math.min(width-1,Math.max(0,convertX(i))/*convertX(i)*/);
@@ -544,6 +536,29 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		    }
 		}
 		repaint();
+	}
+	
+	public void checkEnclosedPoints(){
+		System.out.println("Rectangle: minX: " + convRevX(Math.min(rubStartX,rubLastX)) + 
+									", maxX: " + convRevX(Math.max(rubStartX,rubLastX)) + 
+									", minY: " + convRevY(Math.max(rubStartY,rubLastY)) + 
+									", maxY: " + convRevY(Math.min(rubStartY,rubLastY)));
+
+		int[] t_points = new int[4];
+		
+		t_points[0] = convRevX(Math.min(rubStartX,rubLastX));
+		t_points[2] = convRevX(Math.max(rubStartX,rubLastX));
+		t_points[1] = convRevY(Math.max(rubStartY,rubLastY));
+		t_points[3] = convRevY(Math.min(rubStartY,rubLastY));
+
+		
+		if (sqlspmanager != null){
+		    System.out.println("harald");
+		    sqlspmanager.getSysCore().getMainFrm().iperformancefrm.scatterBounds = t_points;
+		}
+	    
+		checkEnclosedPoints(t_points);
+		
 	}
 	
 	public void checkEnclosedPoints(double[][] _data){

@@ -24,9 +24,9 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.StackedBarRenderer;
 import org.jfree.data.*;
-
 import javax.swing.JCheckBox;
-import javax.swing.JTable;
+
+
 public class InternalPerformanceFrm extends JInternalFrame {
     private static SysCore sysCore = null;
     private JMenuItem jMenuItem = null;    
@@ -46,7 +46,7 @@ public class InternalPerformanceFrm extends JInternalFrame {
 	private JCheckBox jCheckBox = null;
 	public SimpleListTable jTable1 = null;
 	private JScrollPane jScrollPane1 = null;
-	private JButton jButton2 = null;
+	public JButton jButton2 = null;
 	private JButton jButton3 = null;
 	public boolean macroRunning = false;
 	private MacroThread mh = null;
@@ -64,6 +64,11 @@ public class InternalPerformanceFrm extends JInternalFrame {
 		initialize();
 		
 		loadData();
+		
+		dsTableAddRow(10);
+		dsTableAddRow(100);
+		dsTableAddRow(1000);
+		dsTableAddRow(10000);
 	}
 	
 	/*
@@ -87,12 +92,17 @@ public class InternalPerformanceFrm extends JInternalFrame {
 		sysCore.getMainFrm().jMenu1.add(jMenuItem);
 	}
 	
+	private void dsTableAddRow(int _cnt){
+	    Integer[] _int = new Integer[1];
+	    _int[0] = new Integer(_cnt);
+		jTable1.addRow(_int);
+	}
 	public void threadMeth(){
 	    if (macroRunning) {
 		    
 	        try {
 	            mh.stop();
-	            tmh.stop();
+	            //tmh.stop();
 	        }
 	        catch (Exception exc){
 	            System.out.println(exc.getMessage());
@@ -104,6 +114,7 @@ public class InternalPerformanceFrm extends JInternalFrame {
 		    macroRunning = true;
 		    mh = new MacroThread(this,sysCore);
 		    tmh = new Thread(mh);
+		    tmh.start();
 		    
 		    jButton2.setText("Stopp");
 		}
@@ -461,9 +472,7 @@ public class InternalPerformanceFrm extends JInternalFrame {
 			jButton3.setText("Add");
 			jButton3.addActionListener(new java.awt.event.ActionListener() { 
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-				    Integer[] _int = new Integer[1];
-				    _int[0] = new Integer(0);
-					jTable1.addRow(_int);
+				    dsTableAddRow(0);
 				}
 			});
 		}

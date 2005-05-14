@@ -78,4 +78,7 @@ public class SQLScatterDataList extends SQLQuery implements Serializable {
 		//System.out.println(outp);
 		return outp;
 	}
+	
+	
 }
+
