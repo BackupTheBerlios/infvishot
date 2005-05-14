@@ -51,6 +51,10 @@ public class InternalPerformanceFrm extends JInternalFrame {
 	public boolean macroRunning = false;
 	private MacroThread mh = null;
 	private Thread tmh = null;
+	
+	public int[] scatterBounds = null;
+	public String mosaicSelection = null;
+	
 	/**
 	 * This is the default constructor
 	 */
