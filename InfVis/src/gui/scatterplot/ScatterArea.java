@@ -21,7 +21,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	protected double minX,maxX,minY,maxY;
 	protected int[] margins;
 	protected Color pointColor;
-	protected int rubStartX,rubStartY,rubLastX,rubLastY,rubDiffX,rubDiffY;
+	protected int rubStartX,rubStartY,rubLastX,rubLastY,rubDiffX,rubDiffY,xL,yL;
 	protected static double mx,bx,my,by;
 	protected boolean mesh, box, tooltips;
 	protected boolean rubInit, rubEnd, objectsEnclosed, holdSelected, transientActive;
@@ -398,7 +398,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		if (modifier == 24){
 			Graphics g = getGraphics();
 			g.setXORMode(Color.green.darker());
-			drawRubRectangle(g,x,y,x+(Math.abs(rubLastX-rubStartX)),y+(Math.abs(rubStartY-rubLastY)));
+			//drawRubRectangle(g,x,y,x+(Math.abs(rubLastX-rubStartX)),y+(Math.abs(rubStartY-rubLastY)));
 			rubDiffX = (Math.abs(rubLastX-rubStartX));
 			rubDiffY = (Math.abs(rubStartY-rubLastY));
 			transientActive = true;
@@ -424,12 +424,13 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	    
 	    else if (rubInit && transientActive){
 	    	g.setXORMode(Color.green.darker());
-	    	int xL = x, yL = y;
-	    	//drawRubRectangle(g,xL, yL, xL+rubDiffX, yL+rubDiffY);
+
+	    	drawRubRectangle(g,xL, yL, xL+rubDiffX, yL+rubDiffY);
 	    	drawRubRectangle(g,x, y, x+rubDiffX, y+rubDiffY);
-	    	System.out.println("dragged");
-	    }
-	    
+	    	System.out.println("dragged: " + x + " / " + y);
+	    	xL = x;
+	    	yL = y;
+	    }   
 	}
 	
 	private void drawRubRectangle(Graphics g, int startX, int startY, int stopX, int stopY ) {
