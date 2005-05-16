@@ -201,7 +201,7 @@ public class JCSVImportFrm extends JDialog {
 							        data[0] = ei.next();
 							        data[1] = data[0];
 							      
-							        data[2] = "INT";
+							        data[2] = "DOUBLE";
 							        jTable.addRow(data);
 							    }
 							}
