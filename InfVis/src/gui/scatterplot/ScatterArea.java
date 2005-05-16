@@ -8,7 +8,6 @@ package gui.scatterplot;
 
 import java.awt.*;
 import java.awt.event.*;
-
 import javax.swing.*;
 
 import sys.helpers.TimeMeasureObject;
@@ -84,8 +83,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
         	public void componentResized(java.awt.event.ComponentEvent e) {    
         		System.out.println("componentResized()");
         	}
-        });
-			
+        });			
 	}
 	
 	public void setSQLSPManager(SQLScatterDataListManager _sqlspmanager){
@@ -148,12 +146,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	    
 	    // draw Points
 	    drawObjects(g);
-	    
-	    // TODO: Das richtig machen!
-	    /*if (useTransientMode){
-	    	g.setColor(Color.cyan.darker());
-	    	drawRubRectangle(g, rubStartX, rubStartY, rubLastX, rubLastY);
-	    }*/
+
 	}
 
 	public String getToolTipText(java.awt.event.MouseEvent evt) {
@@ -576,11 +569,17 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	    }
 	    
 	    for (int i=0; i<_data.length; i++){
-	        int arrayX = Math.max(0,convertX(_data[i][0]));
+	        /*int arrayX = Math.max(0,convertX(_data[i][0]));
 	        arrayX = Math.min(width-1,convertX(_data[i][0]));
 	        
 	        int arrayY = Math.max(0,convertY(_data[i][1]));
-	        arrayY = Math.min(height-1,convertY(_data[i][1]));
+	        arrayY = Math.min(height-1,convertY(_data[i][1]));*/
+	    	
+            int arrayX /*= Math.max(0,convertX(i));
+            arrayX*/ = Math.min(width-1,Math.max(0,convertX(_data[i][0]))/*convertX(i)*/);
+            
+            int arrayY /*= Math.max(0,convertY(k));
+            arrayY*/ = Math.min(height-1,Math.max(0,convertY(_data[i][1]))/*convertY(k)*/);
 	        
 	        if (objects[arrayX][arrayY] > 0){
 	            objects[arrayX][arrayY]=(-1)*objects[arrayX][arrayY];
