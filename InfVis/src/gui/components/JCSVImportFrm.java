@@ -73,6 +73,7 @@ public class JCSVImportFrm extends JDialog {
 
 	    //TODO
 	    comboBoxT.addItem("-");
+	    comboBoxT.addItem("DOUBLE");
 	    comboBoxT.addItem("INT");
 	    comboBoxT.addItem("VARCHAR(100)");
 			    
@@ -277,7 +278,7 @@ public class JCSVImportFrm extends JDialog {
 					            }
 					            data += "`" + jTable.getValueAt(i,1) + "` " + jTable.getValueAt(i,2) + " NOT NULL";
 					            
-					            if (i == jTable.getRowCount()-1){
+					            if (i == jTable.getRowCount()-1 || (i == jTable.getRowCount()-2 && jTable.getValueAt(i+1,2).toString().equals("-"))){
 					                data += "\n";
 					            }
 					            else {
@@ -309,6 +310,7 @@ public class JCSVImportFrm extends JDialog {
 				        BufferedReader reader =	new BufferedReader(isr);
 				        
 				        String data = "INSERT INTO " + jTextField.getText() + " (";
+				        int genRowCnt = 0;
 				        for (int i=0; i<jTable.getRowCount(); i++){
 				            if (jTable.getValueAt(i,2).toString().equals("-")){
 				               continue; 
@@ -319,6 +321,7 @@ public class JCSVImportFrm extends JDialog {
 				            if (i != jTable.getRowCount()-1){
 				                data += ",";
 				            }
+				            genRowCnt++;
 				        }
 				        
 				        data += ") VALUES(";
@@ -337,12 +340,27 @@ public class JCSVImportFrm extends JDialog {
 				                    continue;
 						        }
 				                
-				                String tt = ei.next().toString();
+				                String tt = "0";
+				                
+				                Object tmpo = null;
+				                try{
+				                    tmpo = ei.next();
+				                }
+				                catch (Exception excc){
+				                    
+				                }
+				                if (tmpo != null) {
+				                    tt = tmpo.toString();
+				                }
+				                 
+				                
+				                
 				                
 				                rdata += "'" + (tt.equals("") ? "0" : tt) + "',";
 				                
 				                cnt++;
 				            }
+				            
 				            rdata = rdata.substring(0,rdata.length()-1);
 				            
 				            rdata += ");\n";
@@ -361,7 +379,8 @@ public class JCSVImportFrm extends JDialog {
 				        JOptionPane.showMessageDialog(null,"Daten erfolgreich importiert!", "Erfolg", JOptionPane.INFORMATION_MESSAGE);
 			        }
 			        catch (Exception exc){
-			            new InfVisException("Fehler","Fehler beim Erstellen der Tabelle!",false).showDialogMessage();
+			            new InfVisException("Fehler","Fehler beim Erstellen der Tabelle!" + exc.getMessage(),false).showDialogMessage();
+			            exc.printStackTrace();
 			            return;
 			        }
 			        
