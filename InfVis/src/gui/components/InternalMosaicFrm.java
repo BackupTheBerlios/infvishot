@@ -113,7 +113,7 @@ public class InternalMosaicFrm extends JInternalFrame {
 	    sysCore.getMainFrm().iperformancefrm.addTimeRow(1,sscdlm.getTime().getTimeDiff(),tmo1.getTimeDiff(),tmo.getTimeDiff(),"PaintMosaic",sscdlm.getDataArray()[0].length);
 	}
 	
-	public void fillMosaic(int _minX, int _minY, int _maxX, int _maxY, String[][] data){
+	public void fillMosaic(double _minX, double _minY, double _maxX, double _maxY, String[][] data){
 	    
 	    if (data == null){
 	        SQLMosaicDataListManager sqlspmanager = new SQLMosaicDataListManager(sysCore,sysCore.getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),jComboBox.getSelectedItem().toString(), jComboBox1.getSelectedItem().toString(),sysCore.getMainFrm().iscatterfrm.jComboBoxXAxis.getSelectedItem().toString(),sysCore.getMainFrm().iscatterfrm.jComboBoxYAxis.getSelectedItem().toString(),false);

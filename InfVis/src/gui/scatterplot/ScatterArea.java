@@ -161,7 +161,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 							   Math.abs(rubLastX-rubStartX),
 							   Math.abs(rubLastY-rubStartY)).contains(x,y))){
 				s = " Number of Objects: " + getNumberOfEnclosedPoints()[0] + " \n" +
-					" Uniquely plotted objects:" + getNumberOfEnclosedPoints()[1] + " ";	
+					" Uniquely plotted objects: " + getNumberOfEnclosedPoints()[1] + " ";	
 			}
 		}
 		return s;
@@ -332,14 +332,14 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		return (int)(y*p[2]+p[3]);
 	}
 	
-	public static int convRevX(double x){
+	public static double convRevX(double x){
 		double[] p = getParameters();
-		return (int)(x/p[0]-p[1]/p[0]);
+		return (x/p[0]-p[1]/p[0]);
 	}
 	
-	public static int convRevY(double y){
+	public static double convRevY(double y){
 		double[] p = getParameters();
-		return (int)(y/p[2]-p[3]/p[2]);
+		return (y/p[2]-p[3]/p[2]);
 	}
 	
 	public void mousePressed(MouseEvent evt) {
@@ -458,7 +458,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		// System.out.println("Rect: " + rubStartX + "/" + rubStartY + " and " + rubLastX + "/" + rubLastY);
 		if (rubInit) {
 			if (transientActive){
-				// Set Rectangle bounds because tranient worked diefferent
+				// Set Rectangle bounds because transient worked different
 				int x = e.getX();
 				int y = e.getY();
 				
@@ -475,9 +475,10 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	}
 	
 	
-	public void checkEnclosedPoints(int[] _points){
+	public void checkEnclosedPoints(double[] _points){
 	    if (sqlspmanager != null) {
 		    int[] tmpbnd = new int[4];
+
 		    
 		    sqlspmanager.setBounds(_points[0],_points[1],_points[2],_points[3]);
 		    sqlspmanager.loadData();
@@ -486,11 +487,18 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		    tmo.start();
 		    
 		    for (int i=0; i<sqlspmanager.getDataArray().length; i++){
-		        int arrayX = Math.max(0,convertX(sqlspmanager.getDataArray()[i][0]));
+		        /*int arrayX = Math.max(0,convertX(sqlspmanager.getDataArray()[i][0]));
 	            arrayX = Math.min(width-1,convertX(sqlspmanager.getDataArray()[i][0]));
 	            
 	            int arrayY = Math.max(0,convertY(sqlspmanager.getDataArray()[i][1]));
-	            arrayY = Math.min(height-1,convertY(sqlspmanager.getDataArray()[i][1]));
+	            arrayY = Math.min(height-1,convertY(sqlspmanager.getDataArray()[i][1]));*/
+	
+		        int arrayX = /*Math.max(0,convertX(sqlspmanager.getDataArray()[i][0]));
+	            arrayX = */Math.min(width-1,Math.max(0,convertX(sqlspmanager.getDataArray()[i][0])/*convertX(sqlspmanager.getDataArray()[i][0])*/));
+	            
+	            int arrayY = /*Math.max(0,convertY(sqlspmanager.getDataArray()[i][1]));
+	            arrayY = */Math.min(height-1,Math.max(0,convertY(sqlspmanager.getDataArray()[i][1])/*convertY(sqlspmanager.getDataArray()[i][1])*/));
+		    	
 	            
 	            if (objects[arrayX][arrayY] > 0){
 	                objects[arrayX][arrayY]=(-1)*objects[arrayX][arrayY];
@@ -512,8 +520,8 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		else {
 		    	    
 		    
-		    for (int i=_points[0]; i<_points[2]; i++){
-		        for (int k=_points[1]; k<_points[3]; k++){
+		    for (double i=_points[0]; i<_points[2]; i++){
+		        for (double k=_points[1]; k<_points[3]; k++){
 		            
 		            int arrayX /*= Math.max(0,convertX(i));
 		            arrayX*/ = Math.min(width-1,Math.max(0,convertX(i))/*convertX(i)*/);
@@ -532,12 +540,12 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	}
 	
 	public void checkEnclosedPoints(){
-		System.out.println("Rectangle: minX: " + convRevX(Math.min(rubStartX,rubLastX)) + 
-									", maxX: " + convRevX(Math.max(rubStartX,rubLastX)) + 
-									", minY: " + convRevY(Math.max(rubStartY,rubLastY)) + 
-									", maxY: " + convRevY(Math.min(rubStartY,rubLastY)));
+		System.out.println("Rectangle: minX: " + Math.min(rubStartX,rubLastX) + " => " + convRevX(Math.min(rubStartX,rubLastX)) + 
+									", maxX: " + Math.max(rubStartX,rubLastX) + " => " + convRevX(Math.max(rubStartX,rubLastX)) + 
+									", minY: " + Math.max(rubStartY,rubLastY) + " => " + convRevY(Math.max(rubStartY,rubLastY)) + 
+									", maxY: " + Math.min(rubStartY,rubLastY) + " => " + convRevY(Math.min(rubStartY,rubLastY)));
 
-		int[] t_points = new int[4];
+		double[] t_points = new double[4];
 		
 		t_points[0] = convRevX(Math.min(rubStartX,rubLastX));
 		t_points[2] = convRevX(Math.max(rubStartX,rubLastX));

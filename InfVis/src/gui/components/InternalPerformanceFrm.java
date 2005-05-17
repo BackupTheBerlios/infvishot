@@ -52,7 +52,7 @@ public class InternalPerformanceFrm extends JInternalFrame {
 	private MacroThread mh = null;
 	private Thread tmh = null;
 	
-	public int[] scatterBounds = null;
+	public double[] scatterBounds = null;
 	public String mosaicSelection = null;
 	
 	/**
