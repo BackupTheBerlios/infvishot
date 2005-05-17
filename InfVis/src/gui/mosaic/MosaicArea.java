@@ -837,8 +837,8 @@ public String getToolTipText(java.awt.event.MouseEvent evt) {
 	
 	for(int i=0; i<ArrayRectangles.length; i++){
 		if(ArrayRectangles[i].returnRect().contains(x,y)){
-			s = ArrayRectangles[i].getIdentifier1()+" = "+ArrayRectangles[i].getID1count()+  " \n" +
-			  	ArrayRectangles[i].getIdentifier2()+" = "+ArrayRectangles[i].getID2count();
+			s = " " + ArrayRectangles[i].getIdentifier1()+" = "+ArrayRectangles[i].getID1count()+  " \n" +
+			  	" " + ArrayRectangles[i].getIdentifier2()+" = "+ArrayRectangles[i].getID2count()+" ";
 			
 			/**s = " Number of Objects: " + getNumberOfEnclosedPoints()[0] + " \n" +
 			" Uniquely plotted objects:" + getNumberOfEnclosedPoints()[1] + " ";	**/
