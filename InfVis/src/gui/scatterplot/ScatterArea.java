@@ -239,7 +239,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		
 		for (int i = 0; i < width; i++) {
 			for (int k = 0; k < height; k++){
-				maxValue = Math.max(maxValue,objects[i][k]);
+				maxValue = Math.max(maxValue,Math.abs(objects[i][k]));
 			}
 		}
 		
