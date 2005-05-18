@@ -476,6 +476,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	
 	
 	public void checkEnclosedPoints(double[] _points){
+	    
 	    if (sqlspmanager != null) {
 		    int[] tmpbnd = new int[4];
 
@@ -536,7 +537,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		        }
 		    }
 		}
-		repaint();
+		repaint(); //PROBLEM
 	}
 	
 	public void checkEnclosedPoints(){
@@ -563,7 +564,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	}
 	
 	public void checkEnclosedPoints(double[][] _data){
-		
+	    	    
 	    for (int i=0; i<width; i++){
 			for (int k=0; k<height; k++){
 				if (objects[i][k] < 0) objects[i][k]*=(-1);
@@ -595,7 +596,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	        }
 	    }
 	    
-	    repaint();
+	    repaint(); //PROBLEM
 	}
 	
 	public int[] getNumberOfEnclosedPoints(){
