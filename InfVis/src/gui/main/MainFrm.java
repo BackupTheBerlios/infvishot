@@ -8,20 +8,20 @@
 package gui.main;
 
 import gui.components.*;
-import gui.components.JCSVImportFrm;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.Vector;
+
 import javax.swing.JFrame;
 
 import sys.main.InfVisException;
 import sys.main.SysCore;
 
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
+import javax.swing.*;
 
 import javax.swing.JDesktopPane;
+import javax.swing.JMenuItem;
 
 public class MainFrm extends JFrame {
     private static SysCore sysCore = null;
@@ -29,6 +29,11 @@ public class MainFrm extends JFrame {
     public InternalMosaicFrm imosaicfrm = null;
     public InternalSettingsFrm isettingsfrm = null;
     public InternalPerformanceFrm iperformancefrm = null;
+    
+    private final static int HORIZONTAL = 0;
+    private final static int VERTICAL = 1;
+    private final static int CASCADE = 2;
+    private final static int ARRANGE = 3;
     
 	private javax.swing.JPanel jContentPane = null;
 
@@ -45,7 +50,12 @@ public class MainFrm extends JFrame {
 	public JMenu jMenu1 = null;
 	private JMenu jMenu4 = null;
 	private JMenuItem jMenuItem3 = null;
-	/**
+    private JMenu jMenu5 = null;
+    private JMenuItem jMenuItem4 = null;
+    private JMenuItem jMenuItem5 = null;
+    private JMenuItem jMenuItem7 = null;
+    private JMenuItem jMenuItem8 = null;
+    /**
 	 * This is the default constructor
 	 */
 	public MainFrm(SysCore _sysCore) {
@@ -100,6 +110,130 @@ public class MainFrm extends JFrame {
         iperformancefrm.setVisible(true);
 	}
 	
+    public void tileFrames(int style){
+        Dimension deskDim = jDesktopPane.getSize();
+        int deskWidth = deskDim.width;
+        int deskHeight = deskDim.height;
+        JInternalFrame[] frames = jDesktopPane.getAllFrames();
+        int frameCount = frames.length;
+        int frameWidth=0;
+        int frameHeight=0;
+        int xpos=0;
+        int ypos=0;
+        double scale = 0.6;
+        int spacer=30;
+        int frameCounter=0;
+        Vector frameVec=new Vector(1,1);
+        boolean areIcons=false;
+        int tempy=0,tempx=0;
+        for (int i =0; i< frameCount; i++) {
+            if (frames[i].isVisible() && !frames[i].isIcon() &&
+                    frames[i].isResizable()) {
+                frameVec.addElement(frames[i]);
+                frameCounter++;
+            }
+            else if(frames[i].isIcon())
+                areIcons=true;
+        }
+        if(areIcons)
+            deskHeight = deskHeight - 50;
+        switch(style){
+        case(HORIZONTAL):
+            for (int i=0; i<frameCounter; i++){
+                JInternalFrame temp = (JInternalFrame) frameVec.elementAt(i);
+                frameWidth = deskWidth;
+                frameHeight = (int)(deskHeight/frameCounter);
+                temp.reshape(xpos, ypos, frameWidth, frameHeight);
+                ypos = ypos+frameHeight;
+                temp.moveToFront();
+            }
+        break;
+        
+        case(VERTICAL):
+            for (int i=0; i<frameCounter; i++){
+                JInternalFrame temp = (JInternalFrame) frameVec.elementAt(i);
+                frameWidth = (int)(deskWidth/frameCounter);
+                frameHeight = deskHeight;
+                if (temp.isResizable())
+                    temp.reshape(xpos, ypos, frameWidth, frameHeight);
+                else
+                    temp.setLocation(xpos,ypos);
+                xpos = xpos+frameWidth;
+                temp.moveToFront();
+            }
+        break;
+        case(CASCADE):
+            for (int i=0; i<frameCounter; i++){
+                JInternalFrame temp = (JInternalFrame) frameVec.elementAt(i);
+                frameWidth =  (int)(deskWidth*scale);
+                frameHeight = (int)(deskHeight*scale);
+                if (temp.isResizable()) {
+                    temp.reshape(xpos, ypos, frameWidth, frameHeight);
+                }
+                else
+                    temp.setLocation(xpos,ypos);
+                temp.moveToFront();
+                xpos=xpos+spacer;
+                ypos=ypos+spacer;
+                if((xpos+frameWidth>deskWidth)||(ypos+frameHeight>deskHeight-50)){
+                    xpos=0;
+                    ypos=0;
+                }
+                
+            }
+        break;
+        case(ARRANGE):
+            int row=new Long(Math.round(Math.sqrt(new Integer(frameCounter).doubleValue()))).intValue();
+        if(row==0)
+            break;
+        int col=frameCounter/row;
+        if (col ==0)
+            break;
+        int rem=frameCounter%row;
+        int rowCount=1;
+        frameWidth = (int) deskWidth/col;
+        frameHeight = (int) deskHeight/row;
+        for (int i=0; i<frameCounter; i++){
+            JInternalFrame temp = (JInternalFrame) frameVec.elementAt(i);
+            if(rowCount<=row-rem) {
+                if (temp.isResizable()){
+                    temp.reshape(xpos,ypos,frameWidth,frameHeight);
+                }
+                else
+                    temp.setLocation(xpos,ypos);
+                if(xpos+10<deskWidth-frameWidth)
+                    xpos=xpos+frameWidth;
+                else {
+                    ypos=ypos+frameHeight;
+                    xpos=0;
+                    rowCount++;
+                }
+            }
+            else
+            {
+                frameWidth = (int)deskWidth/(col+1);
+                if (temp.isResizable())
+                    temp.reshape(xpos,ypos,frameWidth,frameHeight);
+                else
+                    temp.setLocation(xpos,ypos);
+                if(xpos+10<deskWidth-frameWidth)
+                    xpos=xpos+frameWidth;
+                else {
+                    ypos=ypos+frameHeight;
+                    xpos=0;
+                }
+            }
+            temp.dispatchEvent(new java.awt.event.ComponentEvent(temp,java.awt.event.ComponentEvent.COMPONENT_SHOWN));
+        }
+        break;
+        default:
+            break;
+        }
+        
+        iscatterfrm.moveToFront();
+        iscatterfrm.dispatchEvent(new java.awt.event.ComponentEvent(iscatterfrm,java.awt.event.ComponentEvent.COMPONENT_RESIZED));
+    }
+    
 	/**
 	 * This method initializes jContentPane
 	 * 
@@ -257,6 +391,7 @@ public class MainFrm extends JFrame {
 		if (jMenu1 == null) {
 			jMenu1 = new JMenu();
 			jMenu1.setText("Fenster");
+			jMenu1.add(getJMenu5());
 		}
 		return jMenu1;
 	}
@@ -291,4 +426,88 @@ public class MainFrm extends JFrame {
 		}
 		return jMenuItem3;
 	}
+    /**
+     * This method initializes jMenu5	
+     * 	
+     * @return javax.swing.JMenu	
+     */    
+    private JMenu getJMenu5() {
+    	if (jMenu5 == null) {
+    		jMenu5 = new JMenu();
+    		jMenu5.setText("Anordnen");
+    		jMenu5.add(getJMenuItem4());
+    		jMenu5.add(getJMenuItem5());
+    		jMenu5.add(getJMenuItem7());
+    		jMenu5.add(getJMenuItem8());
+    	}
+    	return jMenu5;
+    }
+    /**
+     * This method initializes jMenuItem4	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */    
+    private JMenuItem getJMenuItem4() {
+    	if (jMenuItem4 == null) {
+    		jMenuItem4 = new JMenuItem();
+    		jMenuItem4.setText("Nebeneinander");
+    		jMenuItem4.addActionListener(new java.awt.event.ActionListener() { 
+    			public void actionPerformed(java.awt.event.ActionEvent e) {    
+                    tileFrames(ARRANGE);
+    			}
+    		});
+    	}
+    	return jMenuItem4;
+    }
+    /**
+     * This method initializes jMenuItem5	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */    
+    private JMenuItem getJMenuItem5() {
+    	if (jMenuItem5 == null) {
+    		jMenuItem5 = new JMenuItem();
+    		jMenuItem5.setText("Horizontal");
+    		jMenuItem5.addActionListener(new java.awt.event.ActionListener() { 
+    			public void actionPerformed(java.awt.event.ActionEvent e) {    
+                    tileFrames(HORIZONTAL);
+    			}
+    		});
+    	}
+    	return jMenuItem5;
+    }
+    /**
+     * This method initializes jMenuItem7	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */    
+    private JMenuItem getJMenuItem7() {
+    	if (jMenuItem7 == null) {
+    		jMenuItem7 = new JMenuItem();
+    		jMenuItem7.setText("Vertikal");
+    		jMenuItem7.addActionListener(new java.awt.event.ActionListener() { 
+    			public void actionPerformed(java.awt.event.ActionEvent e) {    
+                    tileFrames(VERTICAL);
+    			}
+    		});
+    	}
+    	return jMenuItem7;
+    }
+    /**
+     * This method initializes jMenuItem8	
+     * 	
+     * @return javax.swing.JMenuItem	
+     */    
+    private JMenuItem getJMenuItem8() {
+    	if (jMenuItem8 == null) {
+    		jMenuItem8 = new JMenuItem();
+    		jMenuItem8.setText("Cascadiert");
+    		jMenuItem8.addActionListener(new java.awt.event.ActionListener() { 
+    			public void actionPerformed(java.awt.event.ActionEvent e) {    
+                    tileFrames(CASCADE);
+    			}
+    		});
+    	}
+    	return jMenuItem8;
+    }
    }  //  @jve:decl-index=0:visual-constraint="10,10"

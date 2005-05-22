@@ -96,6 +96,7 @@ public class InternalScatterFrm extends JInternalFrame {
 		names[1] = sysCore.getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString();
 		
 		sysCore.getMainFrm().imosaicfrm.mainWindow.setSQLManager(new SQLMosaicDataListManager(sysCore,_table,sysCore.getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString(), sysCore.getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString(),sysCore.getMainFrm().iscatterfrm.jComboBoxXAxis.getSelectedItem().toString(),sysCore.getMainFrm().iscatterfrm.jComboBoxYAxis.getSelectedItem().toString(),false));
+        sysCore.getMainFrm().imosaicfrm.mainWindow.setCatCnt(sysCore.getMainFrm().imosaicfrm.jSpinField1.getValue());
 	    sysCore.getMainFrm().imosaicfrm.mainWindow.setData(sscdlm.getStringDataArray(),names);
 	    sysCore.getMainFrm().imosaicfrm.mainWindow.Markers(sysCore.getMainFrm().imosaicfrm.jCheckBox.isSelected());
 	    

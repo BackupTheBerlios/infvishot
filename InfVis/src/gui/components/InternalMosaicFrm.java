@@ -23,6 +23,7 @@ import gui.mosaic.MainWindow;
 import javax.swing.JComboBox;
 
 import javax.swing.JCheckBox;
+import gui.mosaic.JSpinField;
 public class InternalMosaicFrm extends JInternalFrame {
     private static SysCore sysCore = null;
     private JMenuItem jMenuItem = null;    
@@ -36,6 +37,8 @@ public class InternalMosaicFrm extends JInternalFrame {
 	public JComboBox jComboBox = null;
 	public JComboBox jComboBox1 = null;
 	public JCheckBox jCheckBox = null;
+    private JLabel jLabel2 = null;
+    public JSpinField jSpinField1 = null;
 	/**
 	 * This is the default constructor
 	 */
@@ -95,6 +98,7 @@ public class InternalMosaicFrm extends JInternalFrame {
 		
 		//jPanel1.removeAll(); //H
 		//jPanel1.add(new MainWindow(sscdlm.getDataArray(),names), java.awt.BorderLayout.CENTER); //H
+        mainWindow.setCatCnt(jSpinField1.getValue());
 		mainWindow.setData(sscdlm.getDataArray(),names);
 		mainWindow.Markers(jCheckBox.isSelected());
 		mainWindow.setSQLManager(sscdlm);
@@ -128,6 +132,7 @@ public class InternalMosaicFrm extends JInternalFrame {
 	    String[] names =  new String[2];
 	    names[0] = jComboBox.getSelectedItem().toString();
 		names[1] = jComboBox1.getSelectedItem().toString();
+        mainWindow.setCatCnt(jSpinField1.getValue());
 	    mainWindow.fillRects(data,names);
 	    tmo.stop();
 	    
@@ -168,11 +173,15 @@ public class InternalMosaicFrm extends JInternalFrame {
 	 */    
 	private JPanel getJPanel() {
 		if (jPanel == null) {
+			jLabel2 = new JLabel();
+			jLabel2.setText("#:");
 			jLabel1 = new JLabel();
 			jLabel = new JLabel();
 			jPanel = new JPanel();
 			jLabel.setText("Spalte 1:");
 			jLabel1.setText("Spalte 2:");
+			jPanel.add(jLabel2, null);
+			jPanel.add(getJSpinField1(), null);
 			jPanel.add(getJCheckBox(), null);
 			jPanel.add(jLabel, null);
 			jPanel.add(getJComboBox(), null);
@@ -249,4 +258,17 @@ public class InternalMosaicFrm extends JInternalFrame {
 		}
 		return jCheckBox;
 	}
+
+    /**
+     * This method initializes jSpinField1	
+     * 	
+     * @return gui.mosaic.JSpinField	
+     */    
+    private JSpinField getJSpinField1() {
+    	if (jSpinField1 == null) {
+    		jSpinField1 = new JSpinField();
+    		jSpinField1.setValue(10);
+    	}
+    	return jSpinField1;
+    }
       }  //  @jve:decl-index=0:visual-constraint="10,30"
