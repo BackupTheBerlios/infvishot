@@ -61,6 +61,7 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 	    tool = ToolTipManager.sharedInstance();
 	    tool.registerComponent(this);
 	    tool.setInitialDelay(1000);
+	    tool.setReshowDelay(1000);
 		
 		margins[0]=15;	//Reihenfolge: links, unten, rechts, oben
 		margins[1]=20;
@@ -200,7 +201,10 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 			tempi = (Vector)fontPos.get(j);
 			for(int i=0; i<ArrayRectangles.length; i++){
 				String s = (String)tempi.get(0);
-				if(s.equals(ArrayRectangles[i].getIdentifier2())){
+				Boolean b = (Boolean)tempi.get(3);
+				
+				//check if font is rowName with b
+				if(s.equals(ArrayRectangles[i].getIdentifier2()) && b.booleanValue()){
 					Integer ttt;
 					int[] x = new int[3];
 					int[] y = new int[3];
@@ -837,8 +841,8 @@ public String getToolTipText(java.awt.event.MouseEvent evt) {
 	
 	for(int i=0; i<ArrayRectangles.length; i++){
 		if(ArrayRectangles[i].returnRect().contains(x,y)){
-			s = " " + ArrayRectangles[i].getIdentifier1()+" = "+ArrayRectangles[i].getID1count()+  " \n" +
-			  	" " + ArrayRectangles[i].getIdentifier2()+" = "+ArrayRectangles[i].getID2count()+" ";
+			s = ArrayRectangles[i].getIdentifier1()+" = "+ArrayRectangles[i].getID1count()+  " \n" +
+			  	ArrayRectangles[i].getIdentifier2()+" = "+ArrayRectangles[i].getID2count();
 			
 			/**s = " Number of Objects: " + getNumberOfEnclosedPoints()[0] + " \n" +
 			" Uniquely plotted objects:" + getNumberOfEnclosedPoints()[1] + " ";	**/

@@ -8,17 +8,25 @@ public class DataCount{
 	private String[] col2;
 	private Vector elements = new Vector();
 	private Vector elementCount = new Vector();
+	private int catCnt;
+	private int id1cnt=1, id2cnt=1;
 	
 	
-	public DataCount(String[] colone, String[] coltwo){
+	public DataCount(String[] colone, String[] coltwo, int c){
 		col1 = colone;
 		col2 = coltwo;
+		
+		catCnt = c;
 	}
 	
 ///////////////////////////////////////////////////////////////	
 	//	 save how often spefific element occurs
 	public void countElements(){
 		for(int i=0; i<col1.length; i++){
+			if(id1cnt > catCnt || id2cnt > catCnt*id1cnt) {
+				System.out.println("too many categories found --> stopped counting");
+				break;					// if too many categories are found stop count
+			}
 			if(col1[i]!=null && col2[i]!=null){
 				counter(col1[i]);
 				counter("&"+col1[i]+"&"+col2[i]);
@@ -36,6 +44,10 @@ public class DataCount{
 			elements.add(0,el);
 			Integer x = new Integer(1);
 			elementCount.add(0,x);
+			if(el.charAt(0)=='&') id2cnt++;		// increase id2cnt if new id2 element is found
+			else id1cnt++;						// increase id2cnt if new id1 element is found
+			
+		//	System.out.println("id1cnt= "+id1cnt+"   id2cnt= "+id2cnt+"   catCnt= "+catCnt+"   catCnt*id1cnt= "+(catCnt*id1cnt));
 		}
 		else{
 			Integer z = (Integer)elementCount.get(pos);

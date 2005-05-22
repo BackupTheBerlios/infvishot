@@ -12,15 +12,17 @@ public class ProcessData{
 	private int width = 0;
 	private int height = 0;
 	public double dist = 0.1;   // distance between each Rectangle --> TODO: mit diesem Wert experimentieren
+	//public int catCnt=10;
 
 
 	
-	public ProcessData(DataObject dat, String s1, String s2){
+	public ProcessData(DataObject dat, String s1, String s2, int cate){
 		data = dat;			
 		c1 = data.getPos(s1);
 		c2 = data.getPos(s2);
 		
-		DCounter = new DataCount((String[])data.getCol(c1).clone(), (String[])data.getCol(c2).clone());	
+		DCounter = new DataCount((String[])data.getCol(c1)/**.clone()**/, (String[])data.getCol(c2)/**.clone()**/, cate);	
+		//DCounter.catCnt = cate;
 		DCounter.countElements();
 		
 		calculate();		

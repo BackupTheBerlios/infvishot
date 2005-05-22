@@ -21,6 +21,8 @@ import java.util.*;
 
 public class MainWindow  extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
 	MosaicArea mos;
+    private int catCnt = 10;
+    
 	//private Vector h;
 	private double distance;
 	JFrame frame;
@@ -84,40 +86,44 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 		this.updateUI();
 	}
 	
+	
+    
 	public void initialize(){
-		Daten = new DataObject(names, datas);
-		prozi = new ProcessData(Daten, names[0], names[1]);
-		/*
-		frame = new JFrame("Mosaic Plot");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        */
-		
+        Daten = new DataObject(names, datas);
+        prozi = new ProcessData(Daten, names[0], names[1], catCnt);
+        
+        //frame = new JFrame("Mosaic Plot");
+        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
         mos = new MosaicArea(550, 500, prozi.getVector(), prozi.dist){
-			public JToolTip createToolTip()
-			{
-				return new JMultiLineTooltip();
-			}
-		};
-		
+            public JToolTip createToolTip()
+            {
+                return new JMultiLineTooltip();
+            }
+        };
         mos.addMouseListener(this);
         mos.addMouseMotionListener(this);
-        this.add(mos,java.awt.BorderLayout.CENTER);
-       
-        enableEvents(AWTEvent.MOUSE_EVENT_MASK);
-      /*  frame.getContentPane().setLayout(new BorderLayout()); 
-        frame.getContentPane().add(this, BorderLayout.CENTER);
+        enableEvents(java.awt.AWTEvent.MOUSE_EVENT_MASK);
+        
+        
+        this.add(mos);
+        
+        //frame.getContentPane().setLayout(new BorderLayout()); 
+        //frame.getContentPane().add(this, BorderLayout.CENTER);
         
         //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-        */
+        //frame.pack();
+        //frame.setVisible(true);
+        
         this.addComponentListener(new java.awt.event.ComponentAdapter() { 
-			public void componentResized(java.awt.event.ComponentEvent e) {
-				resizeMos();
-			}
-		});
-	}
-	
+            public void componentResized(java.awt.event.ComponentEvent e) {    
+                resizeMos();
+            }
+        });
+
+    }
+    
+    
 	public void resizeMos(){
 		/**frame.remove(this);
 		this.remove(mos);
@@ -135,13 +141,19 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 	    
 	    mos.refreshSize();
 	}
+    
+	//set catCnt to specifiy how many categories are allowed in the plot
+	// default value for catCnt is 10
+	public void setCatCnt(int c){
+	    catCnt = c;
+	}
 	
 	public void fillRects(String[][] selData, String[] selDataNam){
         selectedData = selData;
         selectedDataNames = selDataNam;
 
         selected = new DataObject(selectedDataNames, selectedData);
-        filledProzi = new ProcessData(selected, selectedDataNames[0], selectedDataNames[1]);
+        filledProzi = new ProcessData(selected, selectedDataNames[0],selectedDataNames[1], catCnt);
         mos.fill(filledProzi.getVector());
         mos.setRectsFilled(true);
         mos.repaint();
