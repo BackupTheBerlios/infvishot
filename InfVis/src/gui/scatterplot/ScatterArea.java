@@ -266,19 +266,19 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	}
 	
 	public void setCol(int val, int maxVal, Graphics g){
-		Color c = new Color(255,255,255);	
-		if (val < 0) c = Color.cyan.darker();
+		Color c = new Color(128,128,128);	
+		if (val < 0) c = Color.red;
 		else if (val > 0){
 			for(int i=val; i>0; i--){
-				c = redder(c, maxVal);
+				c = whiter(c, maxVal);
 			}
 		}	
 		g.setColor(c);
 	}
 	
-	public Color redder (Color c, int maxV){
+	public Color whiter (Color c, int maxV){
 		int step = Math.max(1, Math.round(255/maxV));
-		return new Color(255,Math.max(0,c.getGreen()-step),Math.max(c.getBlue()-step,0));
+		return new Color(Math.min(255,c.getRed()+step),Math.min(255,c.getGreen()+step),Math.min(255,c.getBlue()+step));
 	}
 	
 	//Harald
@@ -412,8 +412,9 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
       	Graphics g = getGraphics();
 	    
 	    if (rubInit && (!transientActive)){
-
-	      	g.setXORMode(Color.cyan.darker());
+	    	
+	    	//g.setColor(Color.red);
+	      	g.setXORMode(Color.red);
 	      	
 	      	drawRubRectangle(g,rubStartX, rubStartY, rubLastX, rubLastY);
 	      	drawRubRectangle(g,rubStartX, rubStartY, x, y);
@@ -537,6 +538,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		        }
 		    }
 		}
+	    System.out.println("no repaint1");
 		repaint(); //PROBLEM
 	}
 	
@@ -595,7 +597,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	            objectsEnclosed = true;
 	        }
 	    }
-	    
+	    System.out.println("no repaint 2");
 	    repaint(); //PROBLEM
 	}
 	
