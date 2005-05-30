@@ -69,6 +69,7 @@ public class InternalPerformanceFrm extends JInternalFrame {
 		dsTableAddRow(100);
 		dsTableAddRow(1000);
 		dsTableAddRow(10000);
+        dsTableAddRow(100000);
 	}
 	
 	/*
@@ -168,6 +169,19 @@ public class InternalPerformanceFrm extends JInternalFrame {
         jPanel2.updateUI();
     }
 	
+    class abc implements Comparable{
+        private String val = "";
+        public abc(String _val){
+            val = _val;
+        }
+        public String toString(){
+            return val;
+        }
+        
+        public int compareTo(Object ox){
+            return 0;
+        }
+    }
 	private CategoryDataset createDataset() {
 	    String series0 = "DB";
         String series1 = "Scatterpaint";
@@ -179,17 +193,19 @@ public class InternalPerformanceFrm extends JInternalFrame {
         String[] category = new String[jTable.getRowCount()];
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         for (int i=0; i<category.length; i++){
-            category[i] = "i=" + i + ": " + jTable.getValueAt(i,4).toString();
+            //category[i] = "" + i + " " + jTable.getValueAt(i,4).toString();
+            category[i] = jTable.getValueAt(i,4).toString();
             
             int tmpid = ((Integer)jTable.getValueAt(i,0)).intValue();
             long tmptime1 = ((Long)jTable.getValueAt(i,1)).longValue();
             long tmptime2 = ((Long)jTable.getValueAt(i,2)).longValue();
             long tmptime3 = ((Long)jTable.getValueAt(i,3)).longValue();
             
-            dataset.addValue(tmptime1, series0, category[i]);
+            abc t =  new abc(category[i]);
+            dataset.addValue(tmptime1, series0, t);
             
-            dataset.addValue(tmptime2, series1, category[i]);
-            dataset.addValue(tmptime3, series3, category[i]);
+            dataset.addValue(tmptime2, series1, t);
+            dataset.addValue(tmptime3, series3, t);
             
         }
         
