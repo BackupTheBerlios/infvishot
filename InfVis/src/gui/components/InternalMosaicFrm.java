@@ -28,7 +28,7 @@ public class InternalMosaicFrm extends JInternalFrame {
     private static SysCore sysCore = null;
     private JMenuItem jMenuItem = null;    
 	private javax.swing.JPanel jContentPane = null;
-
+	private String[][] curData = null;
 	private JPanel jPanel = null;
 	private JButton jButton = null;
 	public MainWindow mainWindow = null;
@@ -99,6 +99,7 @@ public class InternalMosaicFrm extends JInternalFrame {
 		//jPanel1.removeAll(); //H
 		//jPanel1.add(new MainWindow(sscdlm.getDataArray(),names), java.awt.BorderLayout.CENTER); //H
         mainWindow.setCatCnt(jSpinField1.getValue());
+        curData = sscdlm.getDataArray();
 		mainWindow.setData(sscdlm.getDataArray(),names);
 		mainWindow.Markers(jCheckBox.isSelected());
 		mainWindow.setSQLManager(sscdlm);
@@ -117,7 +118,7 @@ public class InternalMosaicFrm extends JInternalFrame {
 	    sysCore.getMainFrm().iperformancefrm.addTimeRow(1,sscdlm.getTime().getTimeDiff(),tmo1.getTimeDiff(),tmo.getTimeDiff(),"PaintMosaic",sscdlm.getDataArray()[0].length);
 	}
 	
-	public void fillMosaic(double _minX, double _minY, double _maxX, double _maxY, String[][] data){
+	public void fillMosaic(double _minX, double _minY, double _maxX, double _maxY, String[][] data, boolean _add){
 	    
 	    if (data == null){
 	        SQLMosaicDataListManager sqlspmanager = new SQLMosaicDataListManager(sysCore,sysCore.getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),jComboBox.getSelectedItem().toString(), jComboBox1.getSelectedItem().toString(),sysCore.getMainFrm().iscatterfrm.jComboBoxXAxis.getSelectedItem().toString(),sysCore.getMainFrm().iscatterfrm.jComboBoxYAxis.getSelectedItem().toString(),false);
@@ -126,7 +127,43 @@ public class InternalMosaicFrm extends JInternalFrame {
 	        
 	        data = sqlspmanager.getDataArray();
 	    }
+        
+	    if (_add){
+	        System.out.println("ADD!!");
+	        int tmpacnt = 0;
+            int tmpbcnt = 0;
+	        if (curData != null) 
+	            if (curData.length > 0)
+                    tmpacnt = curData[0].length;
+	        if (data != null) 
+	            if (data.length > 0)
+	                tmpbcnt = data[0].length;
+	        
+            
+	        String[][] t_data = new String[2][tmpacnt + tmpbcnt];
+	        int t_lastcnt = 0;
+	        
+            if (tmpacnt > 0){
+                for (int i=0; i<curData[0].length; i++){
+                    t_data[0][i] = curData[0][i];
+                    t_data[1][i] = curData[1][i];
+                    t_lastcnt++;
+                }
+            }
+	        
+            if (tmpbcnt > 0){
+                for (int i=0; i<data[0].length; i++){
+                    t_data[0][t_lastcnt] = data[0][i];
+                    t_data[1][t_lastcnt] = data[1][i];
+                    t_lastcnt++;
+                }
+            }
+            
+	        data = t_data;
+        }
 	    
+        curData = data;
+        
 	    TimeMeasureObject tmo = new TimeMeasureObject();
 	    tmo.start();
 	    String[] names =  new String[2];

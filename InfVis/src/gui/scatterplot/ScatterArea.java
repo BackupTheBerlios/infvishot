@@ -509,11 +509,15 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 		    }
 		    
 		    tmo.stop();
-		    
+
 		    //Mosaic
 		    TimeMeasureObject tmo1 = new TimeMeasureObject();
 		    tmo1.start();
-		    sqlspmanager.getSysCore().getMainFrm().imosaicfrm.fillMosaic(_points[0],_points[1],_points[2],_points[3],sqlspmanager.getStringDataArray());
+            boolean mspecialdata = false;
+            if (holdSelected){ //transientActive
+                mspecialdata = true;
+            }
+		    sqlspmanager.getSysCore().getMainFrm().imosaicfrm.fillMosaic(_points[0],_points[1],_points[2],_points[3],sqlspmanager.getStringDataArray(),mspecialdata);
 		    sqlspmanager.getSysCore().getMainFrm().imosaicfrm.mainWindow.setSQLManager(new SQLMosaicDataListManager(sqlspmanager.getSysCore(),sqlspmanager.getSysCore().getMainFrm().isettingsfrm.jComboBox.getSelectedItem().toString(),sqlspmanager.getSysCore().getMainFrm().imosaicfrm.jComboBox.getSelectedItem().toString(), sqlspmanager.getSysCore().getMainFrm().imosaicfrm.jComboBox1.getSelectedItem().toString(),sqlspmanager.getSysCore().getMainFrm().iscatterfrm.jComboBoxXAxis.getSelectedItem().toString(),sqlspmanager.getSysCore().getMainFrm().iscatterfrm.jComboBoxYAxis.getSelectedItem().toString(),false));
 		    tmo1.stop();
 		    
