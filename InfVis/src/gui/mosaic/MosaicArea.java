@@ -14,15 +14,15 @@ import java.util.*;
 
 
 public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotionListener{
-	final static Color recCol = Color.BLUE,
-					   recDarkCol = Color.BLUE.darker(),
-					   recColMarked = Color.BLUE.darker().darker(),
+	final static Color recCol = new Color(128,128,128),
+					   recDarkCol = Color.RED,
+					   recColMarked = Color.RED,
 					   filledRecCol = Color.RED,
 					   filledRecdarkCol = Color.RED.darker(),
 					   filRecColMarked = Color.RED.darker().darker(),
-					   fontCol = Color.BLACK,
-					   markerCol = Color.BLACK,
-					   backGround = Color.LIGHT_GRAY;
+					   fontCol = Color.WHITE,
+					   markerCol = Color.WHITE,
+					   backGround = Color.BLACK;
 	public final static Font DEFAULT_FONT = new Font("TimesRoman",Font.PLAIN,9),
 	 								 tr10 = new Font("Arial",Font.PLAIN,10),
 									 tr12 = new Font("Arial",Font.BOLD,12);
@@ -676,6 +676,12 @@ public void mousePressed(MouseEvent evt) {
 			}
 		}
 	}
+}
+
+public void resetSelected(){
+    for(int i=0; i<ArrayRectangles.length; i++){
+        ArrayRectangles[i].setFlag(false);
+    }
 }
 
 /* (non-Javadoc)

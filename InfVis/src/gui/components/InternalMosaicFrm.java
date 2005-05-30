@@ -305,6 +305,7 @@ public class InternalMosaicFrm extends JInternalFrame {
     	if (jSpinField1 == null) {
     		jSpinField1 = new JSpinField();
     		jSpinField1.setValue(10);
+    		jSpinField1.setPreferredSize(new java.awt.Dimension(50,20));
     	}
     	return jSpinField1;
     }

@@ -156,6 +156,7 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
         filledProzi = new ProcessData(selected, selectedDataNames[0],selectedDataNames[1], catCnt);
         mos.fill(filledProzi.getVector());
         mos.setRectsFilled(true);
+        mos.resetSelected();
         mos.repaint();
         this.updateUI();
         //resizeMos();
@@ -293,6 +294,7 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 	        }
 	    }
 	    
+	    mos.setRectsFilled(false);
 	    mos.repaint();
         this.updateUI();
 	}
