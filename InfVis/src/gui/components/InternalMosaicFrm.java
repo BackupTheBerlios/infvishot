@@ -19,7 +19,7 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
 import javax.swing.JButton;
-import gui.mosaic.MainWindow;
+import gui.mosaic.MosaicView;
 import javax.swing.JComboBox;
 
 import javax.swing.JCheckBox;
@@ -31,7 +31,7 @@ public class InternalMosaicFrm extends JInternalFrame {
 	private String[][] curData = null;
 	private JPanel jPanel = null;
 	private JButton jButton = null;
-	public MainWindow mainWindow = null;
+	public MosaicView mainWindow = null;
 	private JLabel jLabel = null;
 	private JLabel jLabel1 = null;
 	public JComboBox jComboBox = null;
@@ -129,7 +129,7 @@ public class InternalMosaicFrm extends JInternalFrame {
 	    }
         
 	    if (_add){
-	        System.out.println("ADD!!");
+	        //System.out.println("ADD!!");
 	        int tmpacnt = 0;
             int tmpbcnt = 0;
 	        if (curData != null) 
@@ -250,9 +250,9 @@ public class InternalMosaicFrm extends JInternalFrame {
 	 * 	
 	 * @return gui.mosaic.MainWindow	
 	 */    
-	private MainWindow getMainWindow() {
+	private MosaicView getMainWindow() {
 		if (mainWindow == null) {
-			mainWindow = new MainWindow(false);
+			mainWindow = new MosaicView(false);
 		}
 		return mainWindow;
 	}

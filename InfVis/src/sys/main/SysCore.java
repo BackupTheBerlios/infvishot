@@ -24,7 +24,7 @@ public class SysCore implements Serializable {
     
     /** Empty constructor */
     public SysCore() {
-    	version = "InfVis 0.11";
+    	version = "InfVis/VRVIS 1.0";
     }
     
     /** Creates a new instance of SysCore */

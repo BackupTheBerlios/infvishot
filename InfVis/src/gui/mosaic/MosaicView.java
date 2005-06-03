@@ -19,7 +19,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
-public class MainWindow  extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
+public class MosaicView  extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
 	MosaicArea mos;
     private int catCnt = 10;
     
@@ -39,25 +39,25 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 	    sqlmd = _sqlm;
 	}
 	
-	public MainWindow(boolean _showmarker){
+	public MosaicView(boolean _showmarker){
 	    datas = new String [2][7];
 		names = new String[2];
 		
 		
-		datas[0][0] = "Franz";
-		datas[1][0] = "gscheit";
-		datas[0][1] = "Oliver";
-		datas[1][1] = "blöd";
-		datas[0][2] = "Herbert";
-		datas[1][2] = "blöd";
-		datas[0][3] = "Franz";
-		datas[1][3] = "gscheit";
-		datas[0][4] = "Franz";
-		datas[1][4] = "gscheit";
-		datas[0][5] = "Oliver";
-		datas[1][5] = "gscheit";
-		datas[0][6] = "Franz";
-		datas[1][6] = "blöd";
+		datas[0][0] = "A";
+		datas[1][0] = "AA";
+		datas[0][1] = "B";
+		datas[1][1] = "BB";
+		datas[0][2] = "C";
+		datas[1][2] = "BB";
+		datas[0][3] = "D";
+		datas[1][3] = "AA";
+		datas[0][4] = "A";
+		datas[1][4] = "BB";
+		datas[0][5] = "CC";
+		datas[1][5] = "C";
+		datas[0][6] = "AA";
+		datas[1][6] = "B";
 		
 		names[0] = "Spalte1";
 		names[1] = "Spalte2";
@@ -67,7 +67,7 @@ public class MainWindow  extends JPanel implements ActionListener, MouseListener
 		this.Markers(_showmarker);
 	}
 	
-	public MainWindow(String[][] data, String[] nam, boolean _showmarker){
+	public MosaicView(String[][] data, String[] nam, boolean _showmarker){
 		datas = data;
 		names = nam;
 		

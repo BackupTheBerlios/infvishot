@@ -99,7 +99,6 @@ public class MosaicArea extends DrawMosaic implements MouseListener, MouseMotion
 /////////////////////////////////////////////////////////////////////////////////////////	
 	//sort rectangles for output
 	private void sortRects(){
-		//System.out.println("hallo");
 		
 		String id1;
 		String id2;

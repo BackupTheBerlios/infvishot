@@ -62,7 +62,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	    useTransientMode = false;
 	    hasValues = false;
 	    
-	    System.out.println("Breite: " + objW + " / Höhe: " + objH);
+	    //System.out.println("Breite: " + objW + " / Höhe: " + objH);
 	    
 		rubInit = false;
 	    objectsEnclosed = false;
@@ -81,7 +81,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	private void initialize() {
         this.addComponentListener(new java.awt.event.ComponentAdapter() { 
         	public void componentResized(java.awt.event.ComponentEvent e) {    
-        		System.out.println("componentResized()");
+        		//System.out.println("componentResized()");
         	}
         });			
 	}
@@ -561,7 +561,6 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 
 		
 		if (sqlspmanager != null){
-		    System.out.println("harald");
 		    sqlspmanager.getSysCore().getMainFrm().iperformancefrm.scatterBounds = t_points;
 		}
 	    
@@ -602,7 +601,7 @@ public class ScatterArea extends DrawArea implements MouseListener, MouseMotionL
 	        }
 	    }
 	    System.out.println("no repaint 2");
-	    repaint(); //PROBLEM
+	    repaint(); 
 	}
 	
 	public int[] getNumberOfEnclosedPoints(){
