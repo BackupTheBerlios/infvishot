@@ -54,6 +54,7 @@ public class InternalPerformanceFrm extends JInternalFrame {
 	
 	public double[] scatterBounds = null;
 	public String mosaicSelection = null;
+    private JPanel jPanel6 = null;
 	
 	/**
 	 * This is the default constructor
@@ -264,6 +265,7 @@ public class InternalPerformanceFrm extends JInternalFrame {
 			jPanel = new JPanel();
 			jPanel.setLayout(new BorderLayout());
 			jPanel.add(getJPanel4(), java.awt.BorderLayout.CENTER);
+			jPanel.add(getJPanel6(), java.awt.BorderLayout.NORTH);
 		}
 		return jPanel;
 	}
@@ -315,8 +317,7 @@ public class InternalPerformanceFrm extends JInternalFrame {
 		if (jPanel4 == null) {
 			jPanel4 = new JPanel();
 			jPanel4.setPreferredSize(new java.awt.Dimension(200,400));
-			jPanel4.add(getJButton1(), null);
-			jPanel4.add(getJCheckBox(), null);
+			jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Macro", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
 			jPanel4.add(getJScrollPane1(), null);
 			jPanel4.add(getJButton3(), null);
 			jPanel4.add(getJButton2(), null);
@@ -456,7 +457,7 @@ public class InternalPerformanceFrm extends JInternalFrame {
 		if (jScrollPane1 == null) {
 			jScrollPane1 = new JScrollPane();
 			jScrollPane1.setViewportView(getJTable1());
-			jScrollPane1.setPreferredSize(new java.awt.Dimension(200,200));
+			jScrollPane1.setPreferredSize(new java.awt.Dimension(192,200));
 		}
 		return jScrollPane1;
 	}
@@ -495,4 +496,18 @@ public class InternalPerformanceFrm extends JInternalFrame {
 		}
 		return jButton3;
 	}
+
+    /**
+     * This method initializes jPanel6	
+     * 	
+     * @return javax.swing.JPanel	
+     */    
+    private JPanel getJPanel6() {
+    	if (jPanel6 == null) {
+    		jPanel6 = new JPanel();
+    		jPanel6.add(getJButton1(), null);
+    		jPanel6.add(getJCheckBox(), null);
+    	}
+    	return jPanel6;
+    }
                  }  //  @jve:decl-index=0:visual-constraint="10,30"
