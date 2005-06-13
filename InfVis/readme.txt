@@ -11,9 +11,9 @@
  - MySQL 3.23.* oder 4.0.*
  
 # Starten des Programms (Windows)
- - java InfVis -classpath .;/lib/*.*
+ - ins Verzeichnis "bin" wechseln, und "start.bat" ausführen.
  - Nach dem Ausführen des obigen Kommandos erscheint ein Fenster, wo die Datenbankdaten 
-   eingegeben werden können.
+   eingegeben werden können (falls die Datenbank nicht automatisch gefunden wurde).
  
 # Programmstruktur
 
@@ -29,6 +29,4 @@
  |- gui.mosaic.*: Klassen für den Mosaicplot
  |- gui.scatterplot.*: Klassen für den Scatterplot
  |- org.jfree.chart.*: Freie Chartlibrary, die für den Performancegraph verwendet wird
- 
-
  
